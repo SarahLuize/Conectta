@@ -1,0 +1,14 @@
+body {
+    background-color: #1a232a;
+    margin: 40px 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+form {
+    margin: 0 auto;
+    width: 400px;
+}
+
+form input[type="submit"] {
+    width: 100%;
+}

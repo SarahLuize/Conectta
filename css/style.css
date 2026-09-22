@@ -1,0 +1,22 @@
+body {
+    background-color: #1a232a;
+    margin: 40px 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.retangulo {
+    /* container principal */
+    width: 100%;
+    min-height: 800px;
+    max-width: 800px;
+    background-color: rgb(41, 54, 70);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    padding: 0 0 20px 0;
+    overflow: hidden;
+}
+
+.botao{
+    font-weight: 600;
+}
