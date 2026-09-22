@@ -1,0 +1,35 @@
+body {
+    background-color: #1a232a;
+    padding: 40px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    width: 50%;
+    max-height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.retangulo {
+    /* container principal */
+    background-color: rgb(41, 54, 70);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 0 0 20px 0;
+}
+
+.colunas-esquerda {
+    gap: 10px;
+    flex-direction: column;
+}
+
+.footer {
+    background-color: rgba(94, 94, 211, 0.281);
+}
+
+b {
+    color: rgb(178, 168, 173);
+}
