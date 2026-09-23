@@ -20,3 +20,34 @@ body {
 .botao{
     font-weight: 600;
 }
+
+.textoDarkMode {
+    color: white;
+}
+
+.link-informacoes{
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.link-informacoes:hover strong,
+.link-informacoes:hover span {
+    text-decoration: none;
+    color: #0d6efd !important; 
+}
+
+.user-link{
+    cursor: pointer;
+}
+
+.user-link:hover strong {
+    text-decoration: underline;
+}
+
+.user-link:hover small {
+    color: #e2e8f0 !important;
+}
+
+.post-bg-color {
+    background-color: rgb(41, 54, 70);
+}
