@@ -1,0 +1,13 @@
+.icone-img, .icone-gif{
+    width: 40px;
+    cursor: pointer;
+}
+
+.icone-img {
+    height: 30px;
+}
+
+.icone-gif {
+    height: 35px;
+}
+
