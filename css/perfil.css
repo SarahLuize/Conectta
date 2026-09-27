@@ -1,0 +1,54 @@
+.capa-wrapper {
+    position: relative;
+}
+
+#capa {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+#fotoPerfil {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    position: absolute;
+    bottom: -90px;
+    /* metade da altura da foto */
+    left: 20px;
+    /* espaço lateral */
+}
+
+.textoPerfil {
+    text-align: left;
+}
+
+.textoPerfil h2 {
+    font-size: 20px;
+    color: white;
+    margin: 0;
+}
+
+.textoPerfil p {
+    font-size: 15px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.textoBiografia {
+    font-size: 15px;
+    color: #9ca3af;
+    line-height: 1.4;
+}
+
+.info-seg-posts{
+    display: flex;
+    margin: 0;
+}
+
+.centralizar {
+    /* Centralizar texto */
+    text-align: center;
+    /* Alinha o texto ao centro do elemento */
+}
