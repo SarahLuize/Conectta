@@ -3,7 +3,7 @@ session_start();
 require_once 'dbconexao.php';
 $conexao = obterConexao();
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    header("Location: index.php");
     exit;
 }
 $id_perfil_logado = $_SESSION['usuario_id'];
