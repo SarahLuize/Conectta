@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'dbconexao.php';
+require_once 'funcoes.php';
 $conexao = obterConexao();
 
 if (!isset($_SESSION['usuario_id'])) {
@@ -49,14 +50,6 @@ $stmt = mysqli_prepare($conexao, "SELECT id, nome, nome_usuario, foto_perfil, ve
 mysqli_stmt_bind_param($stmt, "i", $id_logado);
 mysqli_stmt_execute($stmt);
 $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
-
-//VERIFICAR SE USUARIO LOGADO SEGUE OUTRO USUARIO
-$stmt = mysqli_prepare($conexao, "SELECT quem_esta_seguindo, quem_foi_seguido FROM seguidores WHERE quem_esta_seguindo = ? AND quem_foi_seguido = ?");
-mysqli_stmt_bind_param($stmt, "ii", $id_logado, $usuario['id']);
-mysqli_stmt_execute($stmt);
-$resVerificarSeSegueUsuario = mysqli_stmt_get_result($stmt);
-//Se já tiver uma coluna onde o usuario logado segue o outro usuario, 
-$UsuarioLogadoJaSegueUsuario = mysqli_num_rows($resVerificarSeSegueUsuario) > 0;
 include 'header.php';
 ?>
 
@@ -125,7 +118,8 @@ include 'header.php';
                         </a>
                     </div>
                 <?php else: ?>
-                    <?php if ($UsuarioLogadoJaSegueUsuario) : ?>
+                    <?php $jaSegue = verificarSeSegue($conexao, $_SESSION['usuario_id'], $id_perfil);
+                        if ($jaSegue) : ?>
                         <div class="ms-auto d-inline-flex p-2 ps-5">
                             <form action="recebe-acao-deixar-de-seguir.php" method="POST">
                                 <input type="hidden" name="idPerfilVisitado" value="<?php echo $id_perfil; ?>">
@@ -256,7 +250,8 @@ include 'header.php';
                                         </div>
                                     </div>
 
-                                    <?php if ($jaSegue) : ?>
+                                    <?php $jaSegue = verificarSeSegue($conexao, $_SESSION['usuario_id'], $sugestao['id']);
+                                        if ($jaSegue) : ?>
                                         <form action="recebe-acao-deixar-de-seguir.php" method="POST">
                                             <input type="hidden" name="idPerfilVisitado" value="<?php echo $sugestao['id']; ?>">
                                             <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
