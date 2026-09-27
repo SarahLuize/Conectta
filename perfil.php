@@ -290,8 +290,59 @@ include 'header.php';
             </div>
         </div>
     </div>
-    </div>
 
+    <div class="modal fade" id="modalEditarPerfil" tabindex="-1" aria-labelledby="modalEditarPerfilLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fs-5" id="modalEditarPerfilLabel
+                    <button type=" button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar">Editar perfil</button>
+                </div>
+                <form action="recebe-editar-perfil.php" method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="<?php echo $_SESSION['usuario_id']; ?>">
+
+                        <!--FOTO DE PERFIL-->
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Foto de perfil</label>
+                            <input type="file" name="foto_perfil" id="foto_perfil" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                        </div>
+
+                        <!--FOTO DE CAPA-->
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Foto de capa</label>
+                            <input type="file" name="foto_capa" id="foto_capa" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                        </div>
+
+                        <!--NOME-->
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Nome</label>
+                            <input type="text" name="nome" class="form-control bg-dark text-white border-secondary" value="<?php echo htmlspecialchars($usuario['nome']); ?>" required>
+                        </div>
+                        <!--NOME DE USUARIO-->
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Nome de usuário</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-white" id="addon-wrapping">@</span>
+                                <input type="text" name="nome_usuario" class="form-control bg-dark text-white border-secondary" value="<?php echo htmlspecialchars($usuario['nome_usuario']); ?>" required>
+                            </div>
+                        </div>
+
+                        <!--BIOGRAFIA-->
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Biografia</label>
+                            <textarea type="text" name="biografia" class="form-control bg-dark text-white border-secondary" rows="3" maxlength="160"><?php echo htmlspecialchars($usuario['biografia'] ?? ''); ?></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary fw-bold">Salvar</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
