@@ -2,8 +2,8 @@
 session_start();
 require_once 'dbconexao.php';
 $conexao = obterConexao();
-include 'header.php';
 
+$id_logado = $_SESSION['usuario_id'];
 $id_usuario = isset($_POST['id']) ? $_POST['id'] : null;
 $conteudo = isset($_POST['conteudo']) ? $_POST['conteudo'] : null;
 
@@ -11,6 +11,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header("Location: index.php?redirect=" . urlencode("perfil.php"));
     exit;
 }
+include 'header.php';
 
 //buscar sugestão de outros usuarios
 
@@ -19,8 +20,6 @@ $stmt = mysqli_prepare($conexao, "SELECT id, nome, nome_usuario, foto_perfil, ve
 mysqli_stmt_bind_param($stmt, "i", $id_logado);
 mysqli_stmt_execute($stmt);
 $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
-$sugestao_usuario = mysqli_fetch_assoc($resProcurarUsuarios);
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conteudo = $_POST['conteudo'] ?? '';
@@ -179,20 +178,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <span class="text-secondary"> | </span>
                         <a href="#" class="small link-hover-blue text-decoration-none">Ver todos</a>
                         <br><br><br>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex align-items-center gap-2">
-                                <?php if(!empty($sugestao_usuario) && is_array($sugestao_usuario)) : ?>
-                                    <a href="perfil.php?username=<?php echo $sugestao_usuario['nome_usuario']; ?>">
-                                      <img src="<?php echo htmlspecialchars($sugestao_usuario['foto_perfil']); ?>" alt="Perfil" class="rounded" style="height: 52px; width:52px; object-fit:cover;">
-                                    </a>
-                                    <a class="text-decoration-none" href="perfil.php?username=<?php echo $sugestao_usuario['nome_usuario']; ?>">
-                                        <div class="text-white fw-bold small"><?php echo htmlspecialchars($sugestao_usuario['nome']); ?></div>
-                                        <div class="text-secondary x-small"><?php echo htmlspecialchars($sugestao_usuario['nome_usuario']); ?></div>
-                                    </a>
-                                    <button class="btn btn-secondary btn-sm">SEGUIR</button>
-                                    <?php else: ?>
-                                        <div class="text-secondary small">Nenhuma sugestão no momento</div>
-                                <?php endif?>
+                        <?php if (mysqli_num_rows($resProcurarUsuarios) > 0) : ?>
+                            <?php while ($sugestao = mysqli_fetch_assoc($resProcurarUsuarios)) : ?>
+                                <?php
+                                $stmtSegue = mysqli_prepare($conexao, "SELECT 1 FROM seguidores WHERE quem_esta_seguindo = ? AND quem_foi_seguido = ?");
+                                mysqli_stmt_bind_param($stmtSegue, "ii", $id_logado, $sugestao['id']);
+                                mysqli_stmt_execute($stmtSegue);
+                                $jaSegue = mysqli_num_rows(mysqli_stmt_get_result($stmtSegue)) > 0;
+                                ?>
+
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="perfil.php?username=<?php echo urlencode($sugestao['nome_usuario']); ?>">
+                                            <img src="<?php echo htmlspecialchars($sugestao['foto_perfil'] ?? './img/PLACEHOLDERpfp.png'); ?>" alt="Perfil" class="rounded" style="height: 42px; width: 42px; object-fit: cover;">
+                                        </a>
+                                        <div>
+                                            <a class="text-decoration-none" href="perfil.php?username=<?php echo urlencode($sugestao['nome_usuario']); ?>">
+                                                <div class="text-white fw-bold small mb-0"><?php echo htmlspecialchars($sugestao['nome']); ?></div>
+                                                <div class="text-secondary x-small">@<?php echo htmlspecialchars($sugestao['nome_usuario']); ?></div>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <?php if ($jaSegue) : ?>
+                                        <form action="recebe-acao-deixar-de-seguir.php" method="POST">
+                                            <input type="hidden" name="idPerfilVisitado" value="<?php echo $sugestao['id']; ?>">
+                                            <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                            <button type="submit" name="seguir" class="btn btn-secondary btn-sm fw-bold">SEGUINDO</button>
+                                        </form>
+                                    <?php else : ?>
+                                        <form action="recebe-acao-seguir.php" method="POST">
+                                            <input type="hidden" name="idPerfilVisitado" value="<?php echo $sugestao['id']; ?>">
+                                            <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                            <button type="submit" name="seguir" class="btn btn-primary btn-sm fw-bold">SEGUIR</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php else : ?>
+                            <div class="text-secondary small">Nenhuma sugestão no momento</div>
+                        <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -215,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <textarea name="PostarTexto" id="PostarTexto" class="form-control post-bg-color" rows="3" cols="40" maxlength="140" style="resize: none;" placeholder="O que está acontecendo?"></textarea>
                                         <!--DIV PARA IMAGEM/GIF/ANEXOS-->
                                         <div id="previaAnexosModal"></div>
-                                        
+
                                         <label for="post-imagem-modal" class="form-label">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-image icone-img" viewBox="0 0 16 16">
                                                 <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
@@ -243,6 +268,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    </body>
+</body>
 
 </html>
