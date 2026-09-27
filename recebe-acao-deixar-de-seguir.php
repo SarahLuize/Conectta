@@ -41,15 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (mysqli_stmt_execute($stmtAtualizarBancoDeDados)) {
             //DIMINUI UM USUARIO NA TABELA SEGUINDO DO USUARIO LOGADO
             $stmtSeguindo = mysqli_prepare($conexao, "UPDATE usuario
-        SET numero_seguindo = numero_seguindo - 1
-        WHERE id = ?");
+            SET numero_seguindo = GREATEST(0, numero_seguindo - 1)
+            WHERE id = ?");
             mysqli_stmt_bind_param($stmtSeguindo, "i", $id_perfil_logado);
             mysqli_stmt_execute($stmtSeguindo);
 
             //DIMINUI UM SEGUIDOR NA TABELA SEGUIDORES DO USUARIO A SER SEGUIDO
             $stmtSeguidores = mysqli_prepare($conexao, "UPDATE usuario
-        SET numero_seguidores = numero_seguidores - 1
-        WHERE id = ?");
+            SET numero_seguidores = GREATEST(0, numero_seguidores - 1)
+            WHERE id = ?");
             mysqli_stmt_bind_param($stmtSeguidores, "i", $id_perfil_visitado);
             mysqli_stmt_execute($stmtSeguidores);
 
