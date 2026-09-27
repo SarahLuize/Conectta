@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'dbconexao.php';
+require_once 'funcoes.php';
 $conexao = obterConexao();
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: index.php");
