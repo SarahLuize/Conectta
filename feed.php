@@ -6,7 +6,6 @@ $conexao = obterConexao();
 
 $id_logado = $_SESSION['usuario_id'];
 $id_usuario = isset($_POST['id']) ? $_POST['id'] : null;
-$conteudo = isset($_POST['conteudo']) ? $_POST['conteudo'] : null;
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: index.php?redirect=" . urlencode("perfil.php"));
@@ -269,6 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="./js/posts.js"></script>
 </body>
 
 </html>
