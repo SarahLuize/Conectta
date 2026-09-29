@@ -11,3 +11,48 @@
     height: 35px;
 }
 
+#previaAnexosFeed, #previaAnexosModal {
+    display: none;
+}
+
+#previaAnexosFeed.anexo-arquivos,
+#previaAnexosModal.anexo-arquivos {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+#previaAnexosFeed img,
+#previaAnexosModal img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.anexo-arquivos {
+    display: flex;
+    gap: 10px;
+}
+
+.divAnexo {
+    position: relative;
+    display: inline-block;
+}
+
+.botaoExcluir {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0.295);
+    cursor: pointer;
+    font-size: 12px;
+    border: none;
+}
+
+.botaoExcluir:hover{
+    background:rgba(0, 0, 0, 0.438);
+}
