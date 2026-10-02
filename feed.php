@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z" />
                                     </svg>
                                 </label>
-                                <input class="form-control" type="file" id="post-imagem-feed" name="anexos[]" accept=".png .jpg .jpeg" multiple hidden>
+                                <input class="form-control" type="file" id="post-imagem-feed" name="anexos[]" accept=".png, .jpg, .jpeg" multiple hidden>
 
                                 <label for="post-gif-feed" class="form-label">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 icone-gif">
@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z" />
                                     </svg>
                                 </label>
-                                <input class="form-control" type="file" id="post-imagem-modal" name="anexos[]" accept=".png .jpg .jpeg" multiple hidden>
+                                <input class="form-control" type="file" id="post-imagem-modal" name="anexos[]" accept=".png, .jpg, .jpeg" multiple hidden>
 
                                 <label for="post-gif" class="form-label">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 icone-gif">

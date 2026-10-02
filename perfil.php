@@ -300,13 +300,13 @@ include 'header.php';
                         <!--FOTO DE PERFIL-->
                         <div class="mb-3">
                             <label class="form-label text-secondary small">Foto de perfil</label>
-                            <input type="file" name="foto_perfil" id="foto_perfil" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                            <input type="file" name="foto_perfil" id="foto_perfil" class="form-control bg-dark text-white border-secondary" accept=".png, .jpg, .jpeg, .gif, .webp">
                         </div>
 
                         <!--FOTO DE CAPA-->
                         <div class="mb-3">
                             <label class="form-label text-secondary small">Foto de capa</label>
-                            <input type="file" name="foto_capa" id="foto_capa" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                            <input type="file" name="foto_capa" id="foto_capa" class="form-control bg-dark text-white border-secondary" accept=".png, .jpg, .jpeg, .gif, .webp">
                         </div>
 
                         <!--NOME-->
