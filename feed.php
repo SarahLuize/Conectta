@@ -92,22 +92,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <img src="<?php echo htmlspecialchars($fotoPerfil); ?>" class="rounded-circle" width="48" height="48" alt="Foto de perfil">
                             </div>
 
-                            <form action="recebe-postar-post.php" id="caixaPostagem" method="POST" class="w-100 gem">
+                            <form action="recebe-postar-post.php" id="caixaPostagemFeed" method="POST" enctype="multipart/form-data" class="w-100 gem">
                                 <label for="PostarTexto" class="form-label textoDarkMode fw-bold text-center">Publicar um novo post</label>
                                 <textarea name="PostarTexto" id="PostarTexto" class="form-control post-bg-color" rows="3" cols="40" maxlength="140" style="resize: none;" placeholder="O que está acontecendo?"></textarea>
                                 <!--DIV PARA IMAGEM/GIF/ANEXOS-->
                                 <div id="previaAnexosFeed"></div>
 
-                                <label for="post-imagem-feed" class="form-label">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-image icone-img" viewBox="0 0 16 16">
+                                <label for="post-imagem-feed">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-card-image icone-img" viewBox="0 0 16 16">
                                         <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
                                         <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z" />
                                     </svg>
                                 </label>
                                 <input class="form-control" type="file" id="post-imagem-feed" name="anexos[]" accept=".png, .jpg, .jpeg" multiple hidden>
 
-                                <label for="post-gif-feed" class="form-label">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 icone-gif">
+                                <label for="post-gif-feed">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="bi bi-card-image icone-gif">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 8.25v7.5m6-7.5h-3V12m0 0v3.75m0-3.75H18M9.75 9.348c-1.03-1.464-2.698-1.464-3.728 0-1.03 1.465-1.03 3.84 0 5.304 1.03 1.464 2.699 1.464 3.728 0V12h-1.5M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
                                     </svg>
                                 </label>
@@ -231,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h5 class="modal-title fs-5" id="modalPostarPost">Publicar um novo post</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Publicar post"></button>
                         </div>
-                        <form action="recebe-postar-post.php" id="caixaPostagemFlutuante" method="post" enctype="multipart/form-data">
+                        <form action="recebe-postar-post.php" id="caixaPostagemModal" method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <!--ID DO USUÁRIO-->
                                 <input type="hidden" name="id" value="<?php echo $_SESSION['usuario_id']; ?>">
@@ -241,16 +241,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <!--DIV PARA IMAGEM/GIF/ANEXOS-->
                                 <div id="previaAnexosModal"></div>
 
-                                <label for="post-imagem-modal" class="form-label">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-image icone-img" viewBox="0 0 16 16">
+                                <label for="post-imagem-modal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-card-image icone-img" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
                                         <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54L1 12.5v-9a.5.5 0 0 1 .5-.5z" />
                                     </svg>
                                 </label>
                                 <input class="form-control" type="file" id="post-imagem-modal" name="anexos[]" accept=".png, .jpg, .jpeg" multiple hidden>
 
-                                <label for="post-gif" class="form-label">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 icone-gif">
+                                <label for="post-gif">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="bi bi-card-image icone-gif">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 8.25v7.5m6-7.5h-3V12m0 0v3.75m0-3.75H18M9.75 9.348c-1.03-1.464-2.698-1.464-3.728 0-1.03 1.465-1.03 3.84 0 5.304 1.03 1.464 2.699 1.464 3.728 0V12h-1.5M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
                                     </svg>
                                 </label>

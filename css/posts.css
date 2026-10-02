@@ -1,14 +1,32 @@
 .icone-img, .icone-gif{
-    width: 40px;
     cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    display: inline-flex !important;
+}
+
+.icone-img:hover, .icone-gif:hover{
+    background: rgba(86, 86, 204, 0.486);
 }
 
 .icone-img {
-    height: 30px;
+    height: 1.5em !important;;
+    width: 2em !important;;
+}
+
+.icone-img svg {
+    width: 100% !important;;
+    height: 100% !important;;
 }
 
 .icone-gif {
-    height: 35px;
+    height: 1.8em !important;;
+    width: 2em !important;;
+}
+
+.icone-gif svg {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 #previaAnexosFeed, #previaAnexosModal {
