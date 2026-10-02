@@ -93,7 +93,7 @@ include 'header.php';
                 <!--POSTS-->
                 <div class="link-informacoes d-flex flex-column">
                     <span class="text-secondary small d-block">POSTS</span>
-                    <strong class="text-white d-flex flex-column align-items-center">20</strong>
+                    <strong class="text-white d-flex flex-column align-items-center"><?php echo buscarQtdePostagens($conexao, $usuario['id']); ?></strong>
                 </div>
                 <!--SEGUINDO-->
                 <div class="link-informacoes">
@@ -108,7 +108,7 @@ include 'header.php';
                 <!--FAVORITOS-->
                 <div class="link-informacoes">
                     <span class="text-secondary small d-block">FAVORITOS</span>
-                    <strong class="text-white d-flex flex-column align-items-center">150</strong>
+                    <strong class="text-white d-flex flex-column align-items-center"><?php echo buscarQtdeFavoritos($conexao, $usuario['id']); ?></strong>
                 </div>
                 <!--BOTÃO EDITAR PERFIL-->
                 <?php if ($id_perfil == $_SESSION['usuario_id']) : ?>
