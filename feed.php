@@ -11,6 +11,32 @@ if (!isset($_SESSION['usuario_id'])) {
     header("Location: index.php?redirect=" . urlencode("perfil.php"));
     exit;
 }
+
+
+if (isset($_GET['username'])) {
+    $username = $_GET['username'];
+    $stmt = mysqli_prepare($conexao, "SELECT * FROM usuario WHERE nome_usuario = ?");
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $usuario = mysqli_fetch_assoc($res);
+} else if (isset($_GET['id'])) {
+    $id_perfil = (int)$_GET['id'];
+    $stmt = mysqli_prepare($conexao, "SELECT * FROM usuario WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id_perfil);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $usuario = mysqli_fetch_assoc($res);
+} else {
+    // se não passar parâmetro, carrega o perfil do usuário logado
+    $stmt = mysqli_prepare($conexao, "SELECT * FROM usuario WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id_logado);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $usuario = mysqli_fetch_assoc($res);
+}
+
+$posts = mostrarPosts($conexao);
 include 'header.php';
 
 //buscar sugestão de outros usuarios
@@ -20,25 +46,6 @@ $stmt = mysqli_prepare($conexao, "SELECT id, nome, nome_usuario, foto_perfil, ve
 mysqli_stmt_bind_param($stmt, "i", $id_logado);
 mysqli_stmt_execute($stmt);
 $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $conteudo = $_POST['conteudo'] ?? '';
-
-    if (!empty($conteudo)) {
-        //para aceitar aspas no texto e não quebrar o sql
-        $conteudoLimpo = mysqli_real_escape_string($conexao, $conteudo);
-
-        $sqlSalvarPost = "INSERT INTO postagem(id_usuario, conteudo)
-        VALUES('$id_usuario', '$conteudoLimpo')";
-
-        if (mysqli_query($conexao, $sqlSalvarPost)) {
-            header("Location: index.php");
-            exit;
-        } else {
-            echo "Erro ao salvar." . mysqli_error($conexao);
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -134,34 +141,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="post-item p-3 border-bottom border-secondary">
                         <div class="d-flex gap-3">
                             <div class="w-100">
-                                <div class="d-flex align-items-center gap-2">
-                                    <a href="perfil.php">
-                                        <img src="./img/PLACEHOLDERpfp.png" class="rounded" width="48" height="48" alt="Foto de perfil">
-                                    </a>
-                                    <div>
-                                        <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php">
-                                            <strong class="text-white">NAME</strong>
-                                            <small class="text-secondary">@<span>USERNAME</span></small>
+                                <?php foreach ($posts as $post): ?>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="perfil.php">
+                                            <img src="./img/PLACEHOLDERpfp.png" class="rounded" width="48" height="48" alt="Foto de perfil">
                                         </a>
+                                        <div>
+                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php">
+                                                <strong class="text-white"><?php echo htmlspecialchars($post['nome']); ?></strong>
+                                                <small class="text-secondary">@<span><?php echo htmlspecialchars($post['nome_usuario']); ?></span></small>
+                                            </a>
+                                        </div>
+                                        <?php $hora = formatarHora($post['data_criacao']); ?>
+                                        <small class="text-secondary">•<?php echo ' ' . $hora; ?></small>
                                     </div>
-                                    <small class="text-secondary">• 2h</small>
-                                </div>
 
-                                <p class="text-white mt-1 mb-2">
-                                    Meu primeiro post de teste no Conectta!
-                                </p>
+                                    <?php if (!empty($post['texto'])): ?>
+                                        <p class="text-white mt-1 mb-2">
+                                            <?php echo $post['texto']; ?>
+                                        </p>
+                                    <?php endif; ?>
+                                    <?php if (!empty($post['anexo'])): ?>
+                                            <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid">
+                                    <?php endif; ?>
+                                    <?php if (!empty($post['anexo2'])): ?>
+                                        <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid">
+                                    <?php endif; ?>
 
-                                <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
-                                    <div class="link-informacoes" title="Comentar">
-                                        💬<span> 0</span>
+
+                                    <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
+                                        <div class="link-informacoes" title="Comentar">
+                                            💬<span> 0</span>
+                                        </div>
+                                        <div class="link-informacoes" title="Repostar">
+                                            🔄<span> 0</span>
+                                        </div>
+                                        <div class="link-informacoes" title="Favoritar">
+                                            ⭐<span> 0</span>
+                                        </div>
                                     </div>
-                                    <div class="link-informacoes" title="Repostar">
-                                        🔄<span> 0</span>
-                                    </div>
-                                    <div class="link-informacoes" title="Favoritar">
-                                        ⭐<span> 0</span>
-                                    </div>
-                                </div>
+                                    <hr>
+                                    <br>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
@@ -265,7 +286,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="./js/posts.js"></script>
