@@ -33,3 +33,51 @@ function buscarQtdeFavoritos($conexao, $id_logado)
     mysqli_stmt_close($stmt);
     return $qtde[0] ?? 0;
 }
+
+function mostrarPosts($conexao)
+{
+    $stmt = mysqli_prepare($conexao, "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil FROM postagem AS p
+    INNER JOIN usuario AS u
+    ON p.id_usuario = u.id
+	ORDER BY id DESC;");
+    mysqli_stmt_execute($stmt);
+    $resBuscarPostUsuario =  mysqli_stmt_get_result($stmt);
+    $posts = [];
+    while ($post = mysqli_fetch_assoc($resBuscarPostUsuario)) {
+        $posts[] = $post;
+    }
+    mysqli_stmt_close($stmt);
+    return $posts;
+}
+
+function mostrarPostsApenasUsuario($conexao, $id_perfil)
+{
+    $stmt = mysqli_prepare($conexao, "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil FROM postagem AS p
+    INNER JOIN usuario AS u
+    ON p.id_usuario = u.id
+    WHERE p.id_usuario = ?
+	ORDER BY id DESC;");
+    mysqli_stmt_bind_param($stmt, 'i', $id_perfil);
+    mysqli_stmt_execute($stmt);
+    $resBuscarPostUsuario =  mysqli_stmt_get_result($stmt);
+    $posts = [];
+    while ($post = mysqli_fetch_assoc($resBuscarPostUsuario)) {
+        $posts[] = $post;
+    }
+    mysqli_stmt_close($stmt);
+    return $posts;
+}
+
+function formatarHora($dataSQL){
+    $dataPost = new DateTime($dataSQL);
+    $agora = new DateTime();
+    $diferenca = $agora->diff($dataPost);
+
+    if ($diferenca->y > 0) return $diferenca->y . 'a';
+    if ($diferenca->m > 0) return $diferenca->m . 'm';
+    if ($diferenca->d > 0) return $diferenca->d . 'd';
+    if ($diferenca->h > 0) return $diferenca->h . 'h';
+    if ($diferenca->i > 0) return $diferenca->i . 'min';
+    
+    return 'agora';
+}

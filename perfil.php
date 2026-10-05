@@ -50,6 +50,8 @@ $stmt = mysqli_prepare($conexao, "SELECT id, nome, nome_usuario, foto_perfil, ve
 mysqli_stmt_bind_param($stmt, "i", $id_logado);
 mysqli_stmt_execute($stmt);
 $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
+
+$posts = mostrarPostsApenasUsuario($conexao, $_SESSION['usuario_id']);
 include 'header.php';
 ?>
 
@@ -119,7 +121,7 @@ include 'header.php';
                     </div>
                 <?php else: ?>
                     <?php $jaSegue = verificarSeSegue($conexao, $_SESSION['usuario_id'], $id_perfil);
-                        if ($jaSegue) : ?>
+                    if ($jaSegue) : ?>
                         <div class="ms-auto d-inline-flex p-2 ps-5">
                             <form action="recebe-acao-deixar-de-seguir.php" method="POST">
                                 <input type="hidden" name="idPerfilVisitado" value="<?php echo $id_perfil; ?>">
@@ -180,38 +182,52 @@ include 'header.php';
                     </div>
                     <hr class="border-secondary my-3">
 
-                    <!--POSTAGENS-->
+                    <!-- POSTAGEM -->
                     <div class="post-item p-3 border-bottom border-secondary">
                         <div class="d-flex gap-3">
                             <div class="w-100">
-                                <div class="d-flex align-items-center gap-2">
-                                    <a href="perfil.php">
-                                        <img src="./img/PLACEHOLDERpfp.png" class="rounded" width="48" height="48" alt="Foto de perfil">
-                                    </a>
-                                    <div>
-                                        <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php"> <!--Trocar para usuario que postou-->
-                                            <strong class="text-white">NAME</strong>
-                                            <small class="text-secondary">@<span>USERNAME</span></small>
+                                <?php foreach ($posts as $post): ?>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="perfil.php">
+                                            <img src="./img/PLACEHOLDERpfp.png" class="rounded" width="48" height="48" alt="Foto de perfil">
                                         </a>
+                                        <div>
+                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php">
+                                                <strong class="text-white"><?php echo htmlspecialchars($post['nome']); ?></strong>
+                                                <small class="text-secondary">@<span><?php echo htmlspecialchars($post['nome_usuario']); ?></span></small>
+                                            </a>
+                                        </div>
+                                        <?php $hora = formatarHora($post['data_criacao']); ?>
+                                        <small class="text-secondary">•<?php echo ' ' . $hora; ?></small>
                                     </div>
-                                    <small class="text-secondary">• 2h</small>
-                                </div>
 
-                                <p class="text-white mt-1 mb-2">
-                                    Meu primeiro post de teste na rede social!
-                                </p>
+                                    <?php if (!empty($post['texto'])): ?>
+                                        <p class="text-white mt-1 mb-2">
+                                            <?php echo $post['texto']; ?>
+                                        </p>
+                                    <?php endif; ?>
+                                    <?php if (!empty($post['anexo'])): ?>
+                                        <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid">
+                                    <?php endif; ?>
+                                    <?php if (!empty($post['anexo2'])): ?>
+                                        <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid">
+                                    <?php endif; ?>
 
-                                <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
-                                    <div class="link-informacoes" title="Comentar">
-                                        💬<span> 0</span>
+
+                                    <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
+                                        <div class="link-informacoes" title="Comentar">
+                                            💬<span> 0</span>
+                                        </div>
+                                        <div class="link-informacoes" title="Repostar">
+                                            🔄<span> 0</span>
+                                        </div>
+                                        <div class="link-informacoes" title="Favoritar">
+                                            ⭐<span> 0</span>
+                                        </div>
                                     </div>
-                                    <div class="link-informacoes" title="Rezettar">
-                                        🔄<span> 0</span>
-                                    </div>
-                                    <div class="link-informacoes" title="Favoritar">
-                                        ⭐<span> 0</span>
-                                    </div>
-                                </div>
+                                    <hr>
+                                    <br>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
@@ -251,7 +267,7 @@ include 'header.php';
                                     </div>
 
                                     <?php $jaSegue = verificarSeSegue($conexao, $_SESSION['usuario_id'], $sugestao['id']);
-                                        if ($jaSegue) : ?>
+                                    if ($jaSegue) : ?>
                                         <form action="recebe-acao-deixar-de-seguir.php" method="POST">
                                             <input type="hidden" name="idPerfilVisitado" value="<?php echo $sugestao['id']; ?>">
                                             <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
@@ -269,18 +285,17 @@ include 'header.php';
                         <?php else : ?>
                             <div class="text-secondary small">Nenhuma sugestão no momento</div>
                         <?php endif; ?>
+                        <div class="p-3">
+                            <hr>
+                            <span class="text-white fw-bold mb-2">EM ALTA</span>
+                            <div class="link-informacoes">
+                                <span class="text-secondary small">#Topico1</span>
+                            </div>
+                            <div class="link-informacoes">
+                                <span class="text-secondary small">#Topico2</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="p-3">
-                <hr>
-                <span class="text-white fw-bold mb-2">EM ALTA</span>
-                <div class="link-informacoes">
-                    <span class="text-secondary small">#Topico1</span>
-                </div>
-                <div class="link-informacoes">
-                    <span class="text-secondary small">#Topico2</span>
                 </div>
             </div>
         </div>
