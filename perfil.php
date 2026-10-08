@@ -189,7 +189,7 @@ include 'header.php';
                                 <?php foreach ($posts as $post): ?>
                                     <div class="d-flex align-items-center gap-2">
                                         <a href="perfil.php">
-                                            <img src="./img/PLACEHOLDERpfp.png" class="rounded" width="48" height="48" alt="Foto de perfil">
+                                            <img src="<?php echo htmlspecialchars($post['foto_perfil']); ?>" class="rounded" width="48" height="48" alt="Foto de perfil">
                                         </a>
                                         <div>
                                             <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php">
@@ -206,13 +206,16 @@ include 'header.php';
                                             <?php echo $post['texto']; ?>
                                         </p>
                                     <?php endif; ?>
-                                    <?php if (!empty($post['anexo'])): ?>
-                                        <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid">
+                                    <?php if (!empty($post['anexo']) || !empty($post['anexo2'])): ?>
+                                        <div class="d-flex gap-2 mt-2">
+                                            <?php if (!empty($post['anexo'])): ?>
+                                                <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                            <?php endif; ?>
+                                            <?php if (!empty($post['anexo2'])): ?>
+                                                <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                            <?php endif; ?>
+                                        </div>
                                     <?php endif; ?>
-                                    <?php if (!empty($post['anexo2'])): ?>
-                                        <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid">
-                                    <?php endif; ?>
-
 
                                     <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
                                         <div class="link-informacoes" title="Comentar">
