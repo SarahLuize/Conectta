@@ -11,42 +11,51 @@ if (!isset($_SESSION['usuario_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_usuario = $_SESSION['usuario_id'];
 
-    $anexos = $_POST['anexos[]'] ?? 'anexos[]';
     $postagemTexto = isset($_POST['PostarTexto']) ? $_POST['PostarTexto'] : null;
     $caminhosAnexos = [];
     $diretorio_destino = "uploads/posts/";
+    $somenteAnexos = [];
 
-    if (isset($_FILES['anexos']) && !empty($_FILES['anexos']['name'][0])) {
+    if (isset($_FILES['anexos']) && !empty($_FILES['anexos']['name'])) {
         // Cria a pasta uploads/posts/ se ela não existir
         if (!file_exists($diretorio_destino)) {
             mkdir($diretorio_destino, 0755, true);
         }
-
         $contagemAnexos = count($_FILES['anexos']['name']);
-
         for ($i = 0; $i < $contagemAnexos; $i++) {
 
-            //PROCESSA ANEXO
-            if ($_FILES['anexos']['error'][$i] === UPLOAD_ERR_OK) {
-                $extensao = strtolower(pathinfo($_FILES['anexos']['name'][$i], PATHINFO_EXTENSION));
+            if ($_FILES['anexos']['error'][$i] === UPLOAD_ERR_OK && $_FILES['anexos']['size'][$i] > 0) {
+                $somenteAnexos[] = $i;
+            }
+        }
+
+        if (!empty($somenteAnexos)) {
+            if (count($somenteAnexos) > 2) {
+                echo "Você só pode anexar no máximo 2 mídias por post.";
+                exit;
+            }
+
+            foreach ($somenteAnexos as $indice) {
+                //PROCESSA ANEXO
+                $extensao = strtolower(pathinfo($_FILES['anexos']['name'][$indice], PATHINFO_EXTENSION));
                 $entensoesPermitidas = ['png', 'jpg', 'jpeg', 'gif'];
 
                 //verificar se a extensão da imagem é de uma das extensões permitidas  
-                $verificar = getimagesize($_FILES["anexos"]["tmp_name"][$i]);
+                $verificar = getimagesize($_FILES["anexos"]["tmp_name"][$indice]);
                 if ($verificar !== false && in_array($extensao, $entensoesPermitidas)) {
                     //verifica tamanho do arquivo
-                    if ($_FILES["anexos"]["size"][$i] <= 2097152) {
+                    if ($_FILES["anexos"]["size"][$indice] <= 2097152) {
                         //nome unico pro arquivo
-                        $nomeUnico = "perfil_" . $id_usuario . "_anexo_" . time() . "." . $extensao;
+                        $nomeUnico = "perfil_" . $id_usuario . "_anexo_" . uniqid() . "_" . $indice . "." . $extensao;
                         $caminhoFinal = $diretorio_destino . $nomeUnico;
 
-                        if (move_uploaded_file($_FILES["anexos"]["tmp_name"][$i], $caminhoFinal)) {
+                        if (move_uploaded_file($_FILES["anexos"]["tmp_name"][$indice], $caminhoFinal)) {
                             $caminhosAnexos[] = $caminhoFinal;
                         } else {
                             echo "Erro ao mover o arquivo para a pasta.<br>";
                         }
                     } else {
-                        echo "O anexo " . ($i + 1) . " excede o tamanho máximo de 2MB.<br>";
+                        echo "O anexo " . ($indice + 1) . " excede o tamanho máximo de 2MB.<br>";
                     }
                 } else {
                     echo "Formato de anexo inválido.<br>";
