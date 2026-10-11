@@ -68,17 +68,36 @@ function adicionarArquivos(inputElemento, containerPrevia) {
     atualizarPrevia(containerPrevia);
 };
 
+//Salvar anexos num array/vetor
+function salvarAnexosVetor(anexosCaixaPostagem){
+    let inputAnexos = new DataTransfer();
+
+    anexosCaixaPostagem.addEventListener("change", (e) =>{ 
+        for (let i = 0; i < e.target.files.length; i++) {
+            if (inputAnexos.files.length < 2) {
+                inputAnexos.items.add(e.target.files[i]);
+            } else {
+                alert("Você só pode anexar no máximo 2 mídias por post.");
+                return;
+            }
+        }
+        e.target.files = inputAnexos.files;
+    });
+}
+
 //botões caixa de postagem do feed
 if (botaoImagemFeed) {
     botaoImagemFeed.addEventListener("change", function () {
         adicionarArquivos(this, previaFeed);
     });
+    salvarAnexosVetor(botaoImagemFeed)
 }
 
 if (botaoGifFeed) {
     botaoGifFeed.addEventListener("change", function () {
         adicionarArquivos(this, previaFeed);
     });
+    salvarAnexosVetor(botaoGifFeed)
 }
 
 //botões caixa de postagem janela modal
@@ -86,10 +105,11 @@ if (botaoImagemModal) {
     botaoImagemModal.addEventListener("change", function () {
         adicionarArquivos(this, previaModal);
     });
+    salvarAnexosVetor(botaoImagemModal)
 }
-
 if (botaoGifModal) {
     botaoGifModal.addEventListener("change", function () {
         adicionarArquivos(this, previaModal);
     });
+    salvarAnexosVetor(botaoGifModal)
 }
