@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'dbconexao.php';
+require_once 'funcoes.php';
 $conexao = obterConexao();
 
 if (!isset($_SESSION['usuario_id'])) {
@@ -43,14 +44,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 //verificar se a extensão da imagem é de uma das extensões permitidas  
                 $verificar = getimagesize($_FILES["anexos"]["tmp_name"][$indice]);
                 if ($verificar !== false && in_array($extensao, $entensoesPermitidas)) {
-                    //verifica tamanho do arquivo
-                    if ($_FILES["anexos"]["size"][$indice] <= 2097152) {
+                    //verifica tamanho do arquivo // aceita até 5mb por causa dos gifs
+                    if ($_FILES["anexos"]["size"][$indice] <= 5242880) {
                         //nome unico pro arquivo
                         $nomeUnico = "perfil_" . $id_usuario . "_anexo_" . uniqid() . "_" . $indice . "." . $extensao;
-                        $caminhoFinal = $diretorio_destino . $nomeUnico;
+                        $informacaoArquivo = getimagesize($_FILES["anexos"]["tmp_name"][$indice]);
+                        $mime = $informacaoArquivo['mime'];
 
-                        if (move_uploaded_file($_FILES["anexos"]["tmp_name"][$indice], $caminhoFinal)) {
+                        if ($mime == 'image/gif') {
+                            $caminhoFinal = $diretorio_destino . $nomeUnico;
+                            move_uploaded_file($_FILES["anexos"]["tmp_name"][$indice], $caminhoFinal);
                             $caminhosAnexos[] = $caminhoFinal;
+                        } elseif (in_array($mime, ['image/png', 'image/jpg', 'image/jpeg'])) {
+                            $caminhoFinal = $diretorio_destino . $nomeUnico;
+                            $destinoArquivoComprimido = comprimirAnexos($_FILES["anexos"]["tmp_name"][$indice], $caminhoFinal, 50);
+                            move_uploaded_file($_FILES["anexos"]["tmp_name"][$indice], $destinoArquivoComprimido);
+                            $caminhosAnexos[] = $destinoArquivoComprimido;
                         } else {
                             echo "Erro ao mover o arquivo para a pasta.<br>";
                         }
