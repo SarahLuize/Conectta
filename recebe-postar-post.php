@@ -12,7 +12,7 @@ if (!isset($_SESSION['usuario_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_usuario = $_SESSION['usuario_id'];
 
-    $postagemTexto = isset($_POST['PostarTexto']) ? $_POST['PostarTexto'] : null;
+    $postagemTexto = isset($_POST['PostarTextoFeed']) ? $_POST['PostarTextoFeed'] : '';
     $caminhosAnexos = [];
     $diretorio_destino = "uploads/posts/";
     $somenteAnexos = [];
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo "Erro ao mover o arquivo para a pasta.<br>";
                         }
                     } else {
-                        echo "O anexo " . ($indice + 1) . " excede o tamanho máximo de 2MB.<br>";
+                        echo "O anexo " . ($indice + 1) . " excede o tamanho máximo de 5MB.<br>";
                     }
                 } else {
                     echo "Formato de anexo inválido.<br>";
@@ -77,26 +77,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $temAnexo = !empty($anexo1) || !empty($anexo2);
     $sucesso = '';
-    //Se tiver o texto e não os anexos
-    if ($postagemTexto && !$temAnexo) {
-        $stmtPostarTexto = mysqli_prepare($conexao, "INSERT INTO postagem(id_usuario, texto)
-        VALUES (?, ?)");
-        mysqli_stmt_bind_param($stmtPostarTexto, "is", $id_usuario, $postagemTexto);
-        $sucesso = mysqli_stmt_execute($stmtPostarTexto);
+    
+    $sqlPostarPost = mysqli_prepare($conexao, "INSERT INTO postagem
+    (id_usuario, texto, anexo, anexo2)
+    VALUES(?, ?, ?, ?)");
+
+    if ($postagemTexto === null && $temAnexo) {
+        $postagemTexto = "";
+    } elseif ($postagemTexto === null && !$temAnexo) {
+        $_SESSION['erro_post_null'] = "Erro ao publicar postagem! Postagens sem anexos não podem ser nulas!";
     }
-    //Se tiver os anexos e não texto
-    elseif (!$postagemTexto && $temAnexo) {
-        $stmtPostarAnexo = mysqli_prepare($conexao, "INSERT INTO postagem(id_usuario, anexo, anexo2)
-        VALUES (?, ?, ?)");
-        mysqli_stmt_bind_param($stmtPostarAnexo, "iss", $id_usuario, $anexo1, $anexo2);
-        $sucesso = mysqli_stmt_execute($stmtPostarAnexo);
-    }
-    //Se tiver o texto + anexos
-    elseif ($postagemTexto && $temAnexo) {
-        $stmtPostarPost = mysqli_prepare($conexao, "INSERT INTO postagem(id_usuario, texto, anexo, anexo2)
-        VALUES (?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmtPostarPost, "isss", $id_usuario, $postagemTexto, $anexo1, $anexo2);
-        $sucesso = mysqli_stmt_execute($stmtPostarPost);
+
+    if ($sqlPostarPost) {
+        mysqli_stmt_bind_param($sqlPostarPost, "isss", $id_usuario, $postagemTexto, $anexo1, $anexo2);
+        $sucesso = mysqli_stmt_execute($sqlPostarPost);
+        mysqli_stmt_close($sqlPostarPost);
     } else {
         echo "Postagem inválida. Tente novamente!";
     }
@@ -105,6 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: feed.php");
         exit;
     } else {
-        echo "Erro ao anexar imagem." . mysqli_error($conexao);
+        echo "Erro ao salvar post: " . ($erroStmt ?? 'Condição não atendida ou erro desconhecido.');
     }
 }
