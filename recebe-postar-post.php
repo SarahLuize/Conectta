@@ -77,16 +77,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $temAnexo = !empty($anexo1) || !empty($anexo2);
     $sucesso = '';
-    
+
     $sqlPostarPost = mysqli_prepare($conexao, "INSERT INTO postagem
     (id_usuario, texto, anexo, anexo2)
     VALUES(?, ?, ?, ?)");
 
-    if ($postagemTexto === null && $temAnexo) {
-        $postagemTexto = "";
-    } elseif ($postagemTexto === null && !$temAnexo) {
+    $postagemTexto = trim($postagemTexto);
+
+    if ($postagemTexto === '' && !$temAnexo) {
         $_SESSION['erro_post_null'] = "Erro ao publicar postagem! Postagens sem anexos não podem ser nulas!";
-    }
+        header("Location: feed.php");
+        exit;
+    } 
 
     if ($sqlPostarPost) {
         mysqli_stmt_bind_param($sqlPostarPost, "isss", $id_usuario, $postagemTexto, $anexo1, $anexo2);
