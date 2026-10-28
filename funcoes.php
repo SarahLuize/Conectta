@@ -97,4 +97,24 @@ function comprimirAnexos($origem, $destino, $qualidade){
     imagejpeg($imagem, $origem, $qualidade);
     return $destino;
 }
+
+function buscarQtdeFavoritosPost($conexao, $id_post){
+    $stmt = mysqli_prepare($conexao,
+    "SELECT COUNT(*) FROM favoritos WHERE id_post = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $id_post);
+    mysqli_stmt_execute($stmt);
+    $resBuscarQtdeFavoritosPost = mysqli_stmt_get_result($stmt);
+    $qtde = mysqli_fetch_row($resBuscarQtdeFavoritosPost);
+    mysqli_stmt_close($stmt);
+    return $qtde[0] ?? 0;
+}
+
+function verificarSeFavoritouPost($conexao, $id_perfil, $id_post)
+{
+    //verificar se já favoritou
+    $stmt = mysqli_prepare($conexao, "SELECT * FROM favoritos WHERE id_usuario = ? AND id_post = ?");
+    mysqli_stmt_bind_param($stmt, 'ii', $id_perfil, $id_post);
+    mysqli_stmt_execute($stmt);
+    $resJaFavoritou = mysqli_stmt_get_result($stmt);
+    return mysqli_num_rows($resJaFavoritou) > 0;
 }
