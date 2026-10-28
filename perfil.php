@@ -35,6 +35,11 @@ if (isset($_GET['username'])) {
     $usuario = mysqli_fetch_assoc($res);
 }
 
+if (isset($_SESSION['erro_post_null'])) {
+    echo '<div class="alert alert-danger w-50" role="alert">' . $_SESSION['erro_post_null'] . '</div>';
+    unset($_SESSION['erro_post_null']);
+}
+
 //se não existir no banco
 if (!$usuario) {
     echo "Usuário não encontrado!";
@@ -183,7 +188,7 @@ include 'header.php';
                     <hr class="border-secondary my-3">
 
                     <!-- POSTAGEM -->
-                    <div class="post-item p-3 border-bottom border-secondary">
+                    <div class="post-item p-3">
                         <div class="d-flex gap-3">
                             <div class="w-100">
                                 <?php foreach ($posts as $post): ?>
@@ -199,6 +204,61 @@ include 'header.php';
                                         </div>
                                         <?php $hora = formatarHora($post['data_criacao']); ?>
                                         <small class="text-secondary">•<?php echo ' ' . $hora; ?></small>
+
+                                        <div class="justify-content-lg-end ms-auto p-2">
+                                            <div class="dropdown">
+                                                <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    ⋮
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <?php if ($post['id_usuario'] == $_SESSION["usuario_id"]): ?>
+                                                        <li>
+                                                            <form action="recebe-editar-post.php" method="POST" enctype="multipart/form-data">
+                                                                <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                                <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
+                                                                
+                                                                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPostarPost" data-acao="editar-post" data-id="<?php echo $post['id']; ?>" data-texto="<?php echo $post['texto']; ?>" data-anexo="<?php echo $post['anexo']; ?>" data-anexo2="<?php echo $post['anexo2']; ?>">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                                                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+                                                                    </svg>
+                                                                    Editar post
+                                                                </button>
+                                                            </form>
+                                                        </li>
+
+                                                        <li>
+                                                            <form action="recebe-excluir-post.php" method="POST" class="m-0">
+                                                                <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                                <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
+                                                                
+                                                                <button type="submit" class="dropdown-item">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                                                                    </svg>
+                                                                    Deletar post
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    <?php else: ?>
+                                                        <li><button type="button" class="dropdown-item">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ban" viewBox="0 0 16 16">
+                                                                <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
+                                                            </svg>
+                                                            Bloquear usuário
+                                                        </button></li>
+
+                                                        <li><button type="button" class="dropdown-item">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+                                                                <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+                                                                <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+                                                            </svg>
+                                                            Não interessado
+                                                        </button></li>
+                                                    <?php endif; ?>
+
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <?php if (!empty($post['texto'])): ?>
