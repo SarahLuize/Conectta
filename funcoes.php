@@ -81,3 +81,20 @@ function formatarHora($dataSQL){
     
     return 'agora';
 }
+//código de https://stackoverflow.com/questions/11418594/how-to-reduce-the-image-size-without-losing-quality-in-php/19404938#19404938
+function comprimirAnexos($origem, $destino, $qualidade){
+    $informacao = getimagesize($origem);
+
+    if($informacao['mime'] == 'image/jpeg'){
+        $imagem = imagecreatefromjpeg($origem);
+    }
+    elseif($informacao['mime'] == 'image/jpg'){
+        $imagem = imagecreatefromjpeg($origem);
+    }
+    elseif($informacao['mime'] == 'image/png'){
+        $imagem = imagecreatefrompng($origem);
+    }
+    imagejpeg($imagem, $origem, $qualidade);
+    return $destino;
+}
+}
