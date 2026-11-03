@@ -193,11 +193,11 @@ include 'header.php';
                             <div class="w-100">
                                 <?php foreach ($posts as $post): ?>
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="perfil.php">
+                                        <a href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
                                             <img src="<?php echo htmlspecialchars($post['foto_perfil']); ?>" class="rounded" width="48" height="48" alt="Foto de perfil">
                                         </a>
                                         <div>
-                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php">
+                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
                                                 <strong class="text-white"><?php echo htmlspecialchars($post['nome']); ?></strong>
                                                 <small class="text-secondary">@<span><?php echo htmlspecialchars($post['nome_usuario']); ?></span></small>
                                             </a>
