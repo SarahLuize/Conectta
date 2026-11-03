@@ -32,8 +32,20 @@
 .icone-acoes {
     background: transparent !important;
     border-color: transparent !important;
-    height: 1.2em !important;
-    width: 1.8em !important;
+    height: 2.7em !important;
+    width: 2.7em !important;
+    min-width: 2.7em !important;
+    min-height: 2.7em !important;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.icone-acoes svg {
+    width: 1.1em !important;
+    height: 1.1em !important; 
+    display: inline-block !important;  
+    min-width: 1.1em !important;
+    min-height: 1.1em !important;
 }
 
 #previaAnexosFeed, #previaAnexosModal {
