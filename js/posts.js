@@ -8,6 +8,8 @@ const botaoGifFeed = document.getElementById("post-gif-feed");
 const botaoImagemModal = document.getElementById("post-imagem-modal");
 const botaoGifModal = document.getElementById("post-gif-modal");
 
+const modalCaixaPostagem = document.getElementById("modalPostarPost");
+
 let arquivosSelecionados = [];
 
 function atualizarPrevia(containerPrevia) {
@@ -83,6 +85,79 @@ function salvarAnexosVetor(anexosCaixaPostagem){
         }
         e.target.files = inputAnexos.files;
     });
+}
+
+if(modalCaixaPostagem){
+    modalCaixaPostagem.addEventListener('show.bs.modal', function (event) {
+        const botao = event.relatedTarget;
+
+        if (!botao) {
+            return;
+        }
+        const acao = botao.getAttribute('data-acao');
+        const modalTitulo = document.querySelector('#modalPostarPost .modal-title');
+        const modalBotaoSubmit = document.getElementById('modalBotaoSubmit');
+        const modalInput = document.getElementById('idPost');
+        const modalTextArea = document.getElementById('PostarTexto');
+        const form = document.getElementById('caixaPostagemModal');
+        const anexo1 = botao.getAttribute('data-anexo');
+        const anexo2 = botao.getAttribute('data-anexo2');
+        const previaDiv = document.getElementById('previaAnexosModal');
+        const idPost = botao.getAttribute('data-id');
+
+        if (acao === 'editar-post') {
+            modalTitulo.textContent = 'Editar post';
+            modalBotaoSubmit.textContent ='Editar';
+            modalInput.value = botao.getAttribute('data-id');
+            modalTextArea.value = botao.getAttribute('data-texto');
+            form.action = 'recebe-editar-post.php';
+
+            previaDiv.innerHTML = '';
+            previaDiv.classList.add("anexo-arquivos");
+
+            if(anexo1 && anexo1.trim()){
+                previaDiv.innerHTML +=
+                `<div class="divAnexo" id="caixaAnexo1">
+                    <img src="/Conectta/${anexo1}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" alt="Anexo 1">
+                    <button type="button" class="botaoExcluir" onClick="removerAnexoAntigo(1)">x</button>
+                </div>`;
+                console.log("Anexo 1:", anexo1);
+            }
+            if(anexo2 && anexo2.trim()){
+                previaDiv.innerHTML +=
+                `<div class="divAnexo" id="caixaAnexo2">
+                    <img src="/Conectta/${anexo2}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" alt="Anexo 2">
+                    <button type="button" class="botaoExcluir" onClick="removerAnexoAntigo(2)">x</button>
+                </div>`;
+                console.log("Anexo 2:", anexo2);
+            }
+        } else {
+            previaDiv.classList.remove("anexo-arquivos");
+            modalTitulo.textContent = 'Publicar um novo post';
+            modalBotaoSubmit.textContent ='Postar';
+            modalInput.value = '';
+            modalTextArea.value = '';
+            form.action = 'recebe-postar-post.php';
+            previaDiv.innerHTML = '';
+        }
+    });
+}
+
+function removerAnexoAntigo(numero){
+    const caixa = document.getElementById(`caixaAnexo${numero}`);
+    if (caixa) {
+        caixa.remove();
+    }
+
+    const inputApagar = document.getElementById(`apagarAnexo${numero}`);
+    if (inputApagar) {
+        inputApagar.value = "1";
+    }
+
+    const previaDiv = document.getElementById('previaAnexosModal');
+    if (previaDiv && previaDiv.children.length === 0) {
+        previaDiv.classList.remove("anexo-arquivos");
+    }
 }
 
 //botões caixa de postagem do feed
