@@ -365,7 +365,9 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                 <label for="PostarTexto" class="form-label textoDarkMode fw-bold text-center"></label>
                                 <textarea name="PostarTexto" id="PostarTexto" class="form-control post-bg-color" rows="3" cols="40" maxlength="140" style="resize: none;" placeholder="O que está acontecendo?"></textarea>
                                 <!--DIV PARA IMAGEM/GIF/ANEXOS-->
-                                <div id="previaAnexosModal"></div>
+                                <div id="previaAnexosModal" class="d-flex"></div>
+                                <input type="hidden" name="apagarAnexo1" id="apagarAnexo1" value="0">
+                                <input type="hidden" name="apagarAnexo2" id="apagarAnexo2" value="0">
 
                                 <label for="post-imagem-modal">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-card-image icone-img" fill="currentColor" viewBox="0 0 16 16">
