@@ -12,6 +12,8 @@ if (!isset($_SESSION['usuario_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_usuario = $_SESSION['usuario_id'];
 
+    $tipo = $_POST['tipo']; // postagem ou comentario
+    $paginaRedirecionada = $_POST['paginaRedirecionar'] ?? 'feed.php';
     $postagemTexto = isset($_POST['PostarTextoFeed']) ? $_POST['PostarTextoFeed'] : '';
     $caminhosAnexos = [];
     $diretorio_destino = "uploads/posts/";
@@ -98,10 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Postagem inválida. Tente novamente!";
     }
 
-    if ($sucesso) {
-        header("Location: feed.php");
-        exit;
-    } else {
-        echo "Erro ao salvar post: " . ($erroStmt ?? 'Condição não atendida ou erro desconhecido.');
+        if ($sucesso) {
+            header("Location: " . $paginaRedirecionada);
+            exit;
+        } else {
+            echo "Erro ao salvar comentário: " . ($erroStmt ?? 'Condição não atendida ou erro desconhecido.');
+        }
     }
 }

@@ -360,6 +360,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                 <!--ID DO USUÁRIO-->
                                 <input type="hidden" name="id" value="<?php echo $_SESSION['usuario_id']; ?>">
                                 <input type="hidden" name="idPost" id="idPost" value="">
+                                <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
 
                                 <label for="PostarTexto" class="form-label textoDarkMode fw-bold text-center"></label>
                                 <textarea name="PostarTexto" id="PostarTexto" class="form-control post-bg-color" rows="3" cols="40" maxlength="140" style="resize: none;" placeholder="O que está acontecendo?"></textarea>
