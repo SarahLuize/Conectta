@@ -31,7 +31,7 @@ if (isset($_SESSION['erro_nomeusuario'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/cadastro.css">
-    <title>GenZetta | Criar conta</title>
+    <title>Conectta | Criar conta</title>
 </head>
 
 <body class="bg-dark">
@@ -79,8 +79,8 @@ if (isset($_SESSION['erro_nomeusuario'])) {
             <br><br>
         </form>
 
-        <p class="text-center">Motivos para criar uma conta na nossa plataforma: <br>
-            não somos o Elon Musk, não iremos estragar o GenZetta.</p>
+        <p class="text-center">Faça parte do Conectta: uma experiência simples, <br>
+        rápida e transparente de interação social</p>
 
     </div>
 
