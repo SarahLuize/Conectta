@@ -144,23 +144,25 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                     <br>
 
                     <!-- POSTAGEM -->
-                    <div class="post-item p-3">
-                        <div class="d-flex gap-3">
-                            <div class="w-100">
-                                <?php foreach ($posts as $post): ?>
+                    <div class="post-item p-3 position-relative">
+                        <?php foreach ($posts as $post): ?>
+                            <div class="d-flex gap-3 position-relative">
+
+                                <div class="w-100">
+
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
+                                        <a href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>" class="position-relative z-index2">
                                             <img src="<?php echo htmlspecialchars($post['foto_perfil']); ?>" class="rounded" width="48" height="48" alt="Foto de perfil">
                                         </a>
                                         <div>
-                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
+                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none z-index2" href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
                                                 <strong class="text-white"><?php echo htmlspecialchars($post['nome']); ?></strong>
                                                 <small class="text-secondary">@<span><?php echo htmlspecialchars($post['nome_usuario']); ?></span></small>
                                             </a>
                                         </div>
                                         <?php $hora = formatarHora($post['data_criacao']); ?>
                                         <small class="text-secondary">•<?php echo ' ' . $hora; ?></small>
-                                        <div class="justify-content-lg-end ms-auto p-2">
+                                        <div class="justify-content-lg-end ms-auto p-2 position-relative z-index2">
                                             <div class="dropdown">
                                                 <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">
                                                     ⋮
@@ -171,6 +173,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                                             <form action="recebe-editar-post.php" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
+                                                                <input type="hidden" name="tipo" value="postagem">
 
                                                                 <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPostarPost" data-acao="editar-post" data-id="<?php echo $post['id']; ?>" data-texto="<?php echo $post['texto']; ?>" data-anexo="<?php echo $post['anexo']; ?>" data-anexo2="<?php echo $post['anexo2']; ?>">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -185,6 +188,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                                             <form action="recebe-excluir-post.php" method="POST" class="m-0">
                                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
+                                                                <input type="hidden" name="tipo" value="postagem">
 
                                                                 <button type="submit" class="dropdown-item">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
@@ -218,26 +222,33 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
 
                                     <?php if (!empty($post['texto'])): ?>
                                         <p class="text-white mt-1 mb-2">
-                                            <?php echo $post['texto']; ?>
+                                            <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                <?php echo $post['texto']; ?>
+                                            </a>
                                         </p>
                                     <?php endif; ?>
                                     <?php if (!empty($post['anexo']) || !empty($post['anexo2'])): ?>
                                         <div class="d-flex gap-2 mt-2">
                                             <?php if (!empty($post['anexo'])): ?>
-                                                <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                    <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                </a>
                                             <?php endif; ?>
                                             <?php if (!empty($post['anexo2'])): ?>
-                                                <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                    <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                </a>
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
 
-                                    <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
+                                    <div class="d-flex justify-content-between text-secondary pt-2 z-index2 position-relative" style="max-width: 300px;">
                                         <div class="link-informacoes" title="Comentar">
-                                            <form action="#" method="POST">
+                                            <form action="recebe-postar-post.php" method="POST">
                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
-                                                <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
+                                                <input type="hidden" name="idTipo" value="comentario">
+                                                <button type="button" class="btn icone-acoes d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalPostarPost">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
                                                         <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
                                                     </svg>
@@ -287,9 +298,9 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                     </div>
                                     <hr>
                                     <br>
-                                <?php endforeach; ?>
+                                </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
 
                 </div>
@@ -347,8 +358,6 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                     </div>
                 </div>
             </div>
-                                <input type="hidden" name="apagarAnexo2" id="apagarAnexo2" value="0">
-                                <label for="post-gif">
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

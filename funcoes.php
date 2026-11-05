@@ -68,7 +68,22 @@ function mostrarPostsApenasUsuario($conexao, $id_perfil)
     return $posts;
 }
 
-function formatarHora($dataSQL){
+function buscarPostPorId($conexao, $id_post)
+{
+    $stmt = mysqli_prepare($conexao, "SELECT p.*, u.nome, u.nome_usuario, u.foto_perfil FROM postagem AS p
+    INNER JOIN usuario AS u
+    ON p.id_usuario = u.id
+    WHERE p.id = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $id_post);
+    mysqli_stmt_execute($stmt);
+    $resBuscarPostID =  mysqli_stmt_get_result($stmt);
+    $post = mysqli_fetch_assoc($resBuscarPostID);
+    mysqli_stmt_close($stmt);
+    return $post;
+}
+
+function formatarHora($dataSQL)
+{
     $dataPost = new DateTime($dataSQL);
     $agora = new DateTime();
     $diferenca = $agora->diff($dataPost);
@@ -78,29 +93,31 @@ function formatarHora($dataSQL){
     if ($diferenca->d > 0) return $diferenca->d . 'd';
     if ($diferenca->h > 0) return $diferenca->h . 'h';
     if ($diferenca->i > 0) return $diferenca->i . 'min';
-    
+
     return 'agora';
 }
 //código de https://stackoverflow.com/questions/11418594/how-to-reduce-the-image-size-without-losing-quality-in-php/19404938#19404938
-function comprimirAnexos($origem, $destino, $qualidade){
+function comprimirAnexos($origem, $destino, $qualidade)
+{
     $informacao = getimagesize($origem);
 
-    if($informacao['mime'] == 'image/jpeg'){
+    if ($informacao['mime'] == 'image/jpeg') {
         $imagem = imagecreatefromjpeg($origem);
-    }
-    elseif($informacao['mime'] == 'image/jpg'){
+    } elseif ($informacao['mime'] == 'image/jpg') {
         $imagem = imagecreatefromjpeg($origem);
-    }
-    elseif($informacao['mime'] == 'image/png'){
+    } elseif ($informacao['mime'] == 'image/png') {
         $imagem = imagecreatefrompng($origem);
     }
     imagejpeg($imagem, $origem, $qualidade);
     return $destino;
 }
 
-function buscarQtdeFavoritosPost($conexao, $id_post){
-    $stmt = mysqli_prepare($conexao,
-    "SELECT COUNT(*) FROM favoritos WHERE id_post = ?");
+function buscarQtdeFavoritosPost($conexao, $id_post)
+{
+    $stmt = mysqli_prepare(
+        $conexao,
+        "SELECT COUNT(*) FROM favoritos WHERE id_post = ?"
+    );
     mysqli_stmt_bind_param($stmt, 'i', $id_post);
     mysqli_stmt_execute($stmt);
     $resBuscarQtdeFavoritosPost = mysqli_stmt_get_result($stmt);
