@@ -13,6 +13,9 @@ $id_perfil_logado = $_SESSION['usuario_id'];
 $paginaRedirecionada = $_POST['paginaRedirecionar'] ?? 'feed.php';
 $id_post = $_POST['idPost'] ?? 0;
 $texto = $_POST['PostarTexto'] ?? '';
+$apagarAnexo1 = $_POST['apagarAnexo1'] ?? '0';
+$apagarAnexo2 = $_POST['apagarAnexo2'] ?? '0';
+$sqlApagarAnexos = "";
 
 $anexo1banco = '';
 $anexo2banco = '';
@@ -107,18 +110,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $novoAnexo2 = $anexo2banco;
     }
 
-    $sqlEditarPost = mysqli_prepare($conexao, "UPDATE postagem SET texto = ?, anexo = ?, anexo2 = ? WHERE id = ? AND id_usuario = ?");
+    if ($apagarAnexo1 == 1) {
+        if (!empty($anexo1banco) && file_exists($anexo1banco)) {
+            unlink($anexo1banco);
+        }
+        $sqlApagarAnexos .= ", anexo = NULL";
+    }
 
-    if ($sqlEditarPost) {
-        mysqli_stmt_bind_param($sqlEditarPost, "sssii", $texto, $novoAnexo1, $novoAnexo2, $id_post, $id_perfil_logado);
-        $sucesso = mysqli_stmt_execute($sqlEditarPost);
-        mysqli_stmt_close($sqlEditarPost);
+    if ($apagarAnexo2 == 1) {
+        if (!empty($anexo2banco) && file_exists($anexo2banco)) {
+            unlink($anexo2banco);
+        }
+        $sqlApagarAnexos .= ", anexo2 = NULL";
+    }
 
-        if ($sucesso) {
-            header("Location: " . $paginaRedirecionada);
-            exit;
-        } else {
-            echo "Erro ao atualizar post no banco: " . mysqli_error($conexao);
+    if ($texto === null) {
+        $_SESSION['erro_erro_post_null'] = "Erro ao publicar postagem! Postagens sem anexos não podem ser nulas!";
+    }
+
+    if ($apagarAnexo1 || $apagarAnexo2) {
+        if ($apagarAnexo1 && $apagarAnexo2) {
+            $sqlEditarPost = mysqli_prepare($conexao, "UPDATE postagem SET texto = ? $sqlApagarAnexos WHERE id = ? AND id_usuario = ?");
+            if ($sqlEditarPost) {
+                mysqli_stmt_bind_param($sqlEditarPost, "sii", $texto, $id_post, $id_perfil_logado);
+                $sucesso = mysqli_stmt_execute($sqlEditarPost);
+                mysqli_stmt_close($sqlEditarPost);
+
+                if ($sucesso) {
+                    header("Location: " . $paginaRedirecionada);
+                    exit;
+                } else {
+                    echo "Erro ao atualizar post no banco: " . mysqli_error($conexao);
+                }
+            }
+        } elseif ($apagarAnexo1) {
+            $sqlEditarPost = mysqli_prepare($conexao, "UPDATE postagem SET texto = ? $sqlApagarAnexos WHERE id = ? AND id_usuario = ?");
+            if ($sqlEditarPost) {
+                mysqli_stmt_bind_param($sqlEditarPost, "sii", $texto, $id_post, $id_perfil_logado);
+                $sucesso = mysqli_stmt_execute($sqlEditarPost);
+                mysqli_stmt_close($sqlEditarPost);
+
+                if ($sucesso) {
+                    header("Location: " . $paginaRedirecionada);
+                    exit;
+                } else {
+                    echo "Erro ao atualizar post no banco: " . mysqli_error($conexao);
+                }
+            }
+        } elseif ($apagarAnexo2) {
+            $sqlEditarPost = mysqli_prepare($conexao, "UPDATE postagem SET texto = ? $sqlApagarAnexos WHERE id = ? AND id_usuario = ?");
+            if ($sqlEditarPost) {
+                mysqli_stmt_bind_param($sqlEditarPost, "sii", $texto, $id_post, $id_perfil_logado);
+                $sucesso = mysqli_stmt_execute($sqlEditarPost);
+                mysqli_stmt_close($sqlEditarPost);
+
+                if ($sucesso) {
+                    header("Location: " . $paginaRedirecionada);
+                    exit;
+                } else {
+                    echo "Erro ao atualizar post no banco: " . mysqli_error($conexao);
+                }
+            }
+        }
+    } else {
+        $sqlEditarPost = mysqli_prepare($conexao, "UPDATE postagem SET texto = ?, anexo = ?, anexo2 = ? WHERE id = ? AND id_usuario = ?");
+        if ($sqlEditarPost) {
+            mysqli_stmt_bind_param($sqlEditarPost, "sssii", $texto, $novoAnexo1, $novoAnexo2, $id_post, $id_perfil_logado);
+            $sucesso = mysqli_stmt_execute($sqlEditarPost);
+            mysqli_stmt_close($sqlEditarPost);
+
+            if ($sucesso) {
+                header("Location: " . $paginaRedirecionada);
+                exit;
+            } else {
+                echo "Erro ao atualizar post no banco: " . mysqli_error($conexao);
+            }
         }
     }
 }
