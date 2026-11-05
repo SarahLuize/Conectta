@@ -189,38 +189,31 @@ include 'janela-modal-escrever-postagem.php';
                     <hr class="border-secondary my-3">
 
                     <!-- POSTAGEM -->
-                    <div class="post-item p-3">
-                        <div class="d-flex gap-3">
-                            <div class="w-100">
-                                <?php foreach ($posts as $post): ?>
+                    <div class="post-item p-3 position-relative">
+                        <?php foreach ($posts as $post): ?>
+                            <div class="d-flex gap-3 position-relative">
+
+                                <div class="w-100">
+
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
+                                        <a href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>" class="position-relative z-index2">
                                             <img src="<?php echo htmlspecialchars($post['foto_perfil']); ?>" class="rounded" width="48" height="48" alt="Foto de perfil">
                                         </a>
                                         <div>
-                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none" href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
+                                            <a class="user-link d-flex align-items-center gap-2 text-decoration-none z-index2" href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
                                                 <strong class="text-white"><?php echo htmlspecialchars($post['nome']); ?></strong>
                                                 <small class="text-secondary">@<span><?php echo htmlspecialchars($post['nome_usuario']); ?></span></small>
                                             </a>
                                         </div>
                                         <?php $hora = formatarHora($post['data_criacao']); ?>
                                         <small class="text-secondary">•<?php echo ' ' . $hora; ?></small>
-
-                                        <div class="justify-content-lg-end ms-auto p-2">
+                                        <div class="justify-content-lg-end ms-auto p-2 position-relative z-index2">
                                             <div class="dropdown">
                                                 <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">
                                                     ⋮
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <?php if ($post['id_usuario'] == $_SESSION["usuario_id"]): ?>
-                                                        <li>
-                                                            <button type="button" class="dropdown-item" data-id="<?php echo $post['id']; ?>" data-texto="<?php echo $post['texto']; ?>" data-anexo="<?php echo $post['anexo']; ?>" data-anexo2="<?php echo $post['anexo2']; ?>">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pin-angle-fill" viewBox="0 0 16 16">
-                                                                    <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1 0 .707c-.48.48-1.072.588-1.503.588-.177 0-.335-.018-.46-.039l-3.134 3.134a6 6 0 0 1 .16 1.013c.046.702-.032 1.687-.72 2.375a.5.5 0 0 1-.707 0l-2.829-2.828-3.182 3.182c-.195.195-1.219.902-1.414.707s.512-1.22.707-1.414l3.182-3.182-2.828-2.829a.5.5 0 0 1 0-.707c.688-.688 1.673-.767 2.375-.72a6 6 0 0 1 1.013.16l3.134-3.133a3 3 0 0 1-.04-.461c0-.43.108-1.022.589-1.503a.5.5 0 0 1 .353-.146" />
-                                                                </svg>
-                                                                Fixar post
-                                                            </button>
-                                                        </li>
                                                         <li>
                                                             <form action="recebe-editar-post.php" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
@@ -272,27 +265,31 @@ include 'janela-modal-escrever-postagem.php';
 
                                     <?php if (!empty($post['texto'])): ?>
                                         <p class="text-white mt-1 mb-2">
-                                            <?php echo $post['texto']; ?>
+                                            <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                <?php echo $post['texto']; ?>
+                                            </a>
                                         </p>
                                     <?php endif; ?>
                                     <?php if (!empty($post['anexo']) || !empty($post['anexo2'])): ?>
                                         <div class="d-flex gap-2 mt-2">
                                             <?php if (!empty($post['anexo'])): ?>
-                                                <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                    <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                </a>
                                             <?php endif; ?>
                                             <?php if (!empty($post['anexo2'])): ?>
-                                                <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                    <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                </a>
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
 
-                                    <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
+                                    <div class="d-flex justify-content-between text-secondary pt-2 z-index2 position-relative" style="max-width: 300px;">
                                         <div class="link-informacoes" title="Comentar">
-                                            <form action="#" method="POST">
                                             <form action="recebe-postar-post.php" method="POST">
                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
-                                                <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
                                                 <input type="hidden" name="idTipo" value="comentario">
                                                 <button type="button" class="btn icone-acoes d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalPostarPost">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
@@ -344,9 +341,9 @@ include 'janela-modal-escrever-postagem.php';
                                     </div>
                                     <hr>
                                     <br>
-                                <?php endforeach; ?>
+                                </div>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
