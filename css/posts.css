@@ -101,3 +101,7 @@
     display: block;
     border-radius: 0.2em;
 }
+
+.z-index2 {
+    z-index: 2;
+}
