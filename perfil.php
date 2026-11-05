@@ -58,6 +58,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
 
 $posts = mostrarPostsApenasUsuario($conexao, $_SESSION['usuario_id']);
 include 'header.php';
+include 'janela-modal-escrever-postagem.php';
 ?>
 
 <!DOCTYPE html>
@@ -288,9 +289,12 @@ include 'header.php';
                                     <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
                                         <div class="link-informacoes" title="Comentar">
                                             <form action="#" method="POST">
+                                            <form action="recebe-postar-post.php" method="POST">
                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
                                                 <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
+                                                <input type="hidden" name="idTipo" value="comentario">
+                                                <button type="button" class="btn icone-acoes d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalPostarPost">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
                                                         <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
                                                     </svg>
