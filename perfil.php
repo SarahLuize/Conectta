@@ -290,8 +290,8 @@ include 'janela-modal-escrever-postagem.php';
                                             <form action="recebe-postar-post.php" method="POST">
                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
-                                                <input type="hidden" name="idTipo" value="comentario">
-                                                <button type="button" class="btn icone-acoes d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalPostarPost">
+                                                <input type="hidden" name="tipo" id="tipo" value="comentario">
+                                                <button type="button" id="botaoComentar" class="btn icone-acoes d-flex align-items-center gap-2 abrir-modal-btn" data-bs-toggle="modal" data-bs-target="#modalPostarPost" data-tipo="comentario" data-id="<?php echo $post['id']; ?>">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
                                                         <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
                                                     </svg>

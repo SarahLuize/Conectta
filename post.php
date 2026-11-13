@@ -42,7 +42,10 @@ if (isset($_SESSION['erro_post_null'])) {
 
 $id_post = $_GET['id'];
 $post = buscarPostPorId($conexao, $id_post);
+$comentario = buscarComentarioPorId($conexao, $id_post);
+$comentarios = buscarComentarios($conexao, $id_post);
 include 'header.php';
+include 'janela-modal-escrever-postagem.php';
 
 //buscar sugestão de outros usuarios
 
@@ -80,7 +83,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                     <!--POST PRINCIPAL-->
                     <div class="post-item p-3 position-relative">
                         <?php if (!$post): ?>
-                            echo "Postagem não encontrada! :(";
+                            <?php echo "Postagem não encontrada! :("; ?>
                         <?php else: ?>
                             <div class="d-flex gap-3 position-relative">
 
@@ -109,6 +112,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                                             <form action="recebe-editar-post.php" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
+                                                                <input type="hidden" name="tipo" value="postagem">
 
                                                                 <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPostarPost" data-acao="editar-post" data-id="<?php echo $post['id']; ?>" data-texto="<?php echo $post['texto']; ?>" data-anexo="<?php echo $post['anexo']; ?>" data-anexo2="<?php echo $post['anexo2']; ?>">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -123,6 +127,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                                             <form action="recebe-excluir-post.php" method="POST" class="m-0">
                                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
+                                                                <input type="hidden" name="tipo" value="postagem">
 
                                                                 <button type="submit" class="dropdown-item">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
@@ -178,10 +183,11 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
 
                                     <div class="d-flex justify-content-between text-secondary pt-2 z-index2 position-relative" style="max-width: 300px;">
                                         <div class="link-informacoes" title="Comentar">
-                                            <form action="#" method="POST">
+                                            <form action="recebe-postar-post.php" method="POST">
                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
-                                                <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
-                                                <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
+                                                <input type="hidden" name="idComentario" value="<?php echo $comentario['id']; ?>">
+                                                <input type="hidden" name="tipo" value="comentario">
+                                                <button type="button" id="botaoComentar" class="btn icone-acoes d-flex align-items-center gap-2 abrir-modal-btn" data-bs-toggle="modal" data-bs-target="#modalPostarPost" data-tipo="comentario" data-id="<?php echo $post['id']; ?>">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
                                                         <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
                                                     </svg>
@@ -193,6 +199,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                             <form action="#" method="POST">
                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                                                 <input type="hidden" name="idPost" value="<?php echo $post['id']; ?>">
+                                                <input type="hidden" name="tipo" value="comentario">
                                                 <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-repeat" viewBox="0 0 16 16">
                                                         <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" />
@@ -237,10 +244,175 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
 
                     </div>
 
+                    <div class="distancia">
+                        <h3 class="fs-5 fw-semibold">Comentários</h3>
+                    </div>
                     <br>
 
                     <!-- COMENTÁRIOS -->
-                    <!--tá no backup.php -->
+                    <div class="post-item p-3 position-relative">
+                        <?php if (!$comentarios): ?>
+                            <?php echo "Sem comentários por enquanto!"; ?>
+                        <?php else: ?>
+
+                            <?php foreach ($comentarios as $comentario): ?>
+                                <div class="d-flex gap-3 position-relative">
+
+                                    <div class="w-100">
+
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a href="perfil.php?username=<?php echo htmlspecialchars($comentario['nome_usuario']); ?>" class="position-relative z-index2">
+                                                <img src="<?php echo htmlspecialchars($comentario['foto_perfil']); ?>" class="rounded" width="48" height="48" alt="Foto de perfil">
+                                            </a>
+                                            <div>
+                                                <a class="user-link d-flex align-items-center gap-2 text-decoration-none z-index2" href="perfil.php?username=<?php echo htmlspecialchars($comentario['nome_usuario']); ?>">
+                                                    <strong class="text-white"><?php echo htmlspecialchars($comentario['nome']); ?></strong>
+                                                    <small class="text-secondary">@<span><?php echo htmlspecialchars($comentario['nome_usuario']); ?></span></small>
+                                                </a>
+                                            </div>
+                                            <?php $hora = formatarHora($comentario['data_criacao']); ?>
+                                            <small class="text-secondary">•<?php echo ' ' . $hora; ?></small>
+                                            <div class="justify-content-lg-end ms-auto p-2 position-relative z-index2">
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        ⋮
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <?php if ($comentario['id_usuario'] == $_SESSION["usuario_id"]): ?>
+                                                            <li>
+                                                                <form action="recebe-editar-post.php" method="POST" enctype="multipart/form-data">
+                                                                    <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                                    <input type="hidden" name="idComentario" value="<?php echo $comentario['id']; ?>">
+                                                                    <input type="hidden" name="tipo" id="tipo" value="comentario">
+
+                                                                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPostarPost" data-acao="editar-post" data-id-comentario="<?php echo $comentario['id']; ?>" data-texto="<?php echo $comentario['texto']; ?>" data-anexo="<?php echo $comentario['anexo']; ?>" data-anexo2="<?php echo $comentario['anexo2']; ?>">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                                                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                                                                        </svg>
+                                                                        Editar post
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+
+                                                            <li>
+                                                                <form action="recebe-excluir-post.php" method="POST" class="m-0">
+                                                                    <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                                    <input type="hidden" name="idPost" value="<?php echo $comentario['id']; ?>">
+                                                                    <input type="hidden" name="tipo" value="comentario">
+
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                                                        </svg>
+                                                                        Deletar post
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        <?php else: ?>
+                                                            <li><button type="button" class="dropdown-item">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ban" viewBox="0 0 16 16">
+                                                                        <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0" />
+                                                                    </svg>
+                                                                    Bloquear usuário
+                                                                </button></li>
+
+                                                            <li><button type="button" class="dropdown-item">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+                                                                        <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z" />
+                                                                        <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z" />
+                                                                    </svg>
+                                                                    Não interessado
+                                                                </button></li>
+                                                        <?php endif; ?>
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <?php if (!empty($comentario['texto'])): ?>
+                                            <p class="text-white mt-1 mb-2">
+                                                <a href="post.php?id=<?php echo $comentario['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                    <?php echo $comentario['texto']; ?>
+                                                </a>
+                                            </p>
+                                        <?php endif; ?>
+                                        <?php if (!empty($comentario['anexo']) || !empty($comentario['anexo2'])): ?>
+                                            <div class="d-flex gap-2 mt-2">
+                                                <?php if (!empty($comentario['anexo'])): ?>
+                                                    <a href="post.php?id=<?php echo $comentario['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                        <img src="./<?php echo htmlspecialchars($comentario['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                    </a>
+                                                <?php endif; ?>
+                                                <?php if (!empty($comentario['anexo2'])): ?>
+                                                    <a href="post.php?id=<?php echo $comentario['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                        <img src="./<?php echo htmlspecialchars($comentario['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <div class="d-flex justify-content-between text-secondary pt-2 z-index2 position-relative" style="max-width: 300px;">
+                                            <div class="link-informacoes" title="Comentar">
+                                                <form action="#" method="POST">
+                                                    <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                    <input type="hidden" name="idPost" value="<?php echo $comentario['id']; ?>">
+                                                    <input type="hidden" name="tipo" value="comentario">
+                                                    <button type="button" id="botaoComentar" class="btn icone-acoes d-flex align-items-center gap-2 abrir-modal-btn" data-bs-toggle="modal" data-bs-target="#modalPostarPost" data-tipo="comentario" data-id="<?php echo $comentario['id']; ?>">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
+                                                            <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                                                        </svg>
+                                                        <span> 0</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="link-informacoes" title="Repostar">
+                                                <form action="#" method="POST">
+                                                    <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                    <input type="hidden" name="idPost" value="<?php echo $comentario['id']; ?>">
+                                                    <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-repeat" viewBox="0 0 16 16">
+                                                            <path d="M11 5.466V4H5a4 4 0 0 0-3.584 5.777.5.5 0 1 1-.896.446A5 5 0 0 1 5 3h6V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192m3.81.086a.5.5 0 0 1 .67.225A5 5 0 0 1 11 13H5v1.466a.25.25 0 0 1-.41.192l-2.36-1.966a.25.25 0 0 1 0-.384l2.36-1.966a.25.25 0 0 1 .41.192V12h6a4 4 0 0 0 3.585-5.777.5.5 0 0 1 .225-.67Z" />
+                                                        </svg>
+                                                        <span> 0</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="link-informacoes d-flex align-items-center gap-3">
+                                                <?php $jaFavoritou = verificarSeFavoritouPost($conexao, $_SESSION['usuario_id'], $comentario['id']); ?>
+
+                                                <?php if ($jaFavoritou): ?>
+                                                    <form action="recebe-acao-desfavoritar-post.php" method="POST" class="icone-acoes" title="Desfavoritar">
+                                                        <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                        <input type="hidden" name="idPost" value="<?php echo $comentario['id']; ?>">
+                                                        <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                            </svg>
+                                                            <span class="m-0 p-0"><?php echo buscarQtdeFavoritosPost($conexao, $comentario['id']); ?></span>
+                                                        </button>
+                                                    </form>
+                                                <?php else: ?>
+                                                    <form action="recebe-acao-favoritar-post.php" method="POST" class="icone-acoes" title="Favoritar">
+                                                        <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                                                        <input type="hidden" name="idPost" value="<?php echo $comentario['id']; ?>">
+                                                        <button type="submit" class="btn icone-acoes d-flex align-items-center gap-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                                                                <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z" />
+                                                            </svg>
+                                                            <span class="m-0 p-0"><?php echo buscarQtdeFavoritosPost($conexao, $comentario['id']); ?></span>
+                                                        </button>
+                                                    </form>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <br>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
                 </div>
             </div>

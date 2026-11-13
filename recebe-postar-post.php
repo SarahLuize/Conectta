@@ -13,8 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_usuario = $_SESSION['usuario_id'];
 
     $tipo = $_POST['tipo']; // postagem ou comentario
+    $idPost = $_POST['idPost']; //numero do id do post
     $paginaRedirecionada = $_POST['paginaRedirecionar'] ?? 'feed.php';
-    $postagemTexto = isset($_POST['PostarTextoFeed']) ? $_POST['PostarTextoFeed'] : '';
+    $postagemTexto = $_POST['PostarTextoFeed'] ?? $_POST['PostarTexto'] ?? '';
     $caminhosAnexos = [];
     $diretorio_destino = "uploads/posts/";
     $somenteAnexos = [];
@@ -80,25 +81,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $temAnexo = !empty($anexo1) || !empty($anexo2);
     $sucesso = '';
 
-    $sqlPostarPost = mysqli_prepare($conexao, "INSERT INTO postagem
-    (id_usuario, texto, anexo, anexo2)
-    VALUES(?, ?, ?, ?)");
+    if ($tipo === 'postagem') {
+        $postagemTexto = trim($postagemTexto);
 
-    $postagemTexto = trim($postagemTexto);
+        if ($postagemTexto === '' && !$temAnexo) {
+            $_SESSION['erro_post_null'] = "Erro ao publicar postagem! Postagens sem anexos não podem ser nulas!";
+            header("Location: " . $paginaRedirecionada);
+            exit;
+        }
 
-    if ($postagemTexto === '' && !$temAnexo) {
-        $_SESSION['erro_post_null'] = "Erro ao publicar postagem! Postagens sem anexos não podem ser nulas!";
-        header("Location: feed.php");
-        exit;
-    } 
+        $sqlPostarPost = mysqli_prepare($conexao, "INSERT INTO postagem
+        (id_usuario, texto, anexo, anexo2)
+        VALUES(?, ?, ?, ?)");
 
-    if ($sqlPostarPost) {
-        mysqli_stmt_bind_param($sqlPostarPost, "isss", $id_usuario, $postagemTexto, $anexo1, $anexo2);
-        $sucesso = mysqli_stmt_execute($sqlPostarPost);
-        mysqli_stmt_close($sqlPostarPost);
-    } else {
-        echo "Postagem inválida. Tente novamente!";
-    }
+        if ($sqlPostarPost) {
+            mysqli_stmt_bind_param($sqlPostarPost, "isss", $id_usuario, $postagemTexto, $anexo1, $anexo2);
+            $sucesso = mysqli_stmt_execute($sqlPostarPost);
+            mysqli_stmt_close($sqlPostarPost);
+        } else {
+            echo "Postagem inválida. Tente novamente!";
+        }
+
+        if ($sucesso) {
+            header("Location: " . $paginaRedirecionada);
+            exit;
+        } else {
+            echo "Erro ao salvar post: " . ($erroStmt ?? 'Condição não atendida ou erro desconhecido.');
+        }
+    } else if ($tipo === 'comentario') {
+
+        $postagemTexto = trim($postagemTexto);
+
+        if ($postagemTexto === '' && !$temAnexo) {
+            $_SESSION['erro_post_null'] = "Erro ao publicar comentário! Comentários sem anexos não podem ser nulos!";
+            header("Location: " . $paginaRedirecionada);
+            exit;
+        }
+
+        $sqlPostarComentario = mysqli_prepare($conexao, "INSERT INTO comentario
+        (id_post, id_usuario, texto, anexo, anexo2)
+        VALUES(?, ?, ?, ?, ?)");
+
+        if ($sqlPostarComentario) {
+            mysqli_stmt_bind_param($sqlPostarComentario, "iisss", $idPost, $id_usuario, $postagemTexto, $anexo1, $anexo2);
+            $sucesso = mysqli_stmt_execute($sqlPostarComentario);
+            mysqli_stmt_close($sqlPostarComentario);
+        } else {
+            echo "Comentário inválido. Tente novamente!";
+        }
 
         if ($sucesso) {
             header("Location: " . $paginaRedirecionada);

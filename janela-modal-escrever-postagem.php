@@ -12,8 +12,9 @@
                     <!--ID DO USUÁRIO-->
                     <input type="hidden" name="id" value="<?php echo $_SESSION['usuario_id']; ?>">
                     <input type="hidden" name="idPost" id="idPost" value="">
+                    <input type="hidden" name="idComentario" id="idComentario" value="">
                     <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
-                    <input type="hidden" name="tipo" id="idTipo" value="postagem">
+                    <input type="hidden" name="tipo" id="tipo" value="">
 
                     <label for="PostarTexto" class="form-label textoDarkMode fw-bold text-center"></label>
                     <textarea name="PostarTexto" id="PostarTexto" class="form-control post-bg-color" rows="3" cols="40" maxlength="140" style="resize: none;" placeholder="O que está acontecendo?"></textarea>
@@ -40,6 +41,7 @@
                     <div class="d-flex justify-content-end mt-2">
                         <button class="btn btn-primary px-4 py-2 fw-bold" type="submit" id="modalBotaoSubmit">Postar</button>
                     </div>
+
                 </div>
             </form>
         </div>

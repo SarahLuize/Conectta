@@ -135,3 +135,34 @@ function verificarSeFavoritouPost($conexao, $id_perfil, $id_post)
     $resJaFavoritou = mysqli_stmt_get_result($stmt);
     return mysqli_num_rows($resJaFavoritou) > 0;
 }
+
+
+function buscarComentarios ($conexao, $id_post){
+    $stmt = mysqli_prepare($conexao, "SELECT c.*, u.nome, u.nome_usuario, u.foto_perfil, u.foto_capa FROM comentario AS c
+    INNER JOIN usuario AS u
+    ON c.id_usuario = u.id
+    WHERE c.id_post = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $id_post);
+    mysqli_stmt_execute($stmt);
+    $resBuscarComentarios = mysqli_stmt_get_result($stmt);
+    $comentarios = [];
+    while ($comentario = mysqli_fetch_array($resBuscarComentarios)) {
+        $comentarios[] = $comentario;
+    }
+    mysqli_stmt_close($stmt);
+    return $comentarios;
+}
+
+function buscarComentarioPorId($conexao, $id_post)
+{
+    $stmt = mysqli_prepare($conexao, "SELECT c.*, u.nome, u.nome_usuario, u.foto_perfil FROM comentario AS c
+    INNER JOIN usuario AS u
+    ON c.id_usuario = u.id
+    WHERE c.id = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $id_post);
+    mysqli_stmt_execute($stmt);
+    $resBuscarPostID =  mysqli_stmt_get_result($stmt);
+    $post = mysqli_fetch_assoc($resBuscarPostID);
+    mysqli_stmt_close($stmt);
+    return $post;
+}
