@@ -81,16 +81,16 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                 <div class="retangulo h-100">
 
                     <!--POST PRINCIPAL-->
-                    <div class="post-item p-3 position-relative">
+                    <div class="post-item p-3">
                         <?php if (!$post): ?>
                             <?php echo "Postagem não encontrada! :("; ?>
                         <?php else: ?>
-                            <div class="d-flex gap-3 position-relative">
+                            <div class="d-flex gap-3">
 
                                 <div class="w-100">
 
                                     <div class="d-flex align-items-center gap-2">
-                                        <a href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>" class="position-relative z-index2">
+                                        <a href="perfil.php?username=<?php echo htmlspecialchars($post['nome_usuario']); ?>">
                                             <img src="<?php echo htmlspecialchars($post['foto_perfil']); ?>" class="rounded" width="48" height="48" alt="Foto de perfil">
                                         </a>
                                         <div>
@@ -101,7 +101,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                         </div>
                                         <?php $hora = formatarHora($post['data_criacao']); ?>
                                         <small class="text-secondary">•<?php echo ' ' . $hora; ?></small>
-                                        <div class="justify-content-lg-end ms-auto p-2 position-relative z-index2">
+                                        <div class="justify-content-lg-end ms-auto p-2">
                                             <div class="dropdown">
                                                 <button type="button" class="btn" data-bs-toggle="dropdown" aria-expanded="false">
                                                     ⋮
@@ -160,28 +160,22 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                     </div>
 
                                     <?php if (!empty($post['texto'])): ?>
-                                        <p class="text-white mt-1 mb-2">
-                                            <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
-                                                <?php echo $post['texto']; ?>
-                                            </a>
+                                        <p class="text-white mt-1 mb-2 post-texto-enfase">
+                                            <?php echo $post['texto']; ?>
                                         </p>
                                     <?php endif; ?>
                                     <?php if (!empty($post['anexo']) || !empty($post['anexo2'])): ?>
                                         <div class="d-flex gap-2 mt-2">
                                             <?php if (!empty($post['anexo'])): ?>
-                                                <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
-                                                    <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
-                                                </a>
+                                                <img src="./<?php echo htmlspecialchars($post['anexo']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
                                             <?php endif; ?>
                                             <?php if (!empty($post['anexo2'])): ?>
-                                                <a href="post.php?id=<?php echo $post['id']; ?>" class="stretched-link text-decoration-none text-white">
-                                                    <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
-                                                </a>
+                                                <img src="./<?php echo htmlspecialchars($post['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
 
-                                    <div class="d-flex justify-content-between text-secondary pt-2 z-index2 position-relative" style="max-width: 300px;">
+                                    <div class="d-flex justify-content-between text-secondary pt-2" style="max-width: 300px;">
                                         <div class="link-informacoes" title="Comentar">
                                             <form action="recebe-postar-post.php" method="POST">
                                                 <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
@@ -191,7 +185,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
                                                         <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
                                                     </svg>
-                                                    <span> 0</span>
+                                                    <span class="m-0 p-0"><?php echo buscarQtdeComentariosPost($conexao, $post['id']); ?></span>
                                                 </button>
                                             </form>
                                         </div>
@@ -345,7 +339,7 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                                     </a>
                                                 <?php endif; ?>
                                                 <?php if (!empty($comentario['anexo2'])): ?>
-                                                    <a href="post.php?id=<?php echo $comentario['id']; ?>" class="stretched-link text-decoration-none text-white">
+                                                    <a href="post.php?id=<?php echo $comentario['id']; ?>" class="text-decoration-none text-white">
                                                         <img src="./<?php echo htmlspecialchars($comentario['anexo2']); ?>" alt="" class="img-fluid mt-2 anexo-posts">
                                                     </a>
                                                 <?php endif; ?>

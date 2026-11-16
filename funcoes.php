@@ -166,3 +166,17 @@ function buscarComentarioPorId($conexao, $id_post)
     mysqli_stmt_close($stmt);
     return $post;
 }
+
+function buscarQtdeComentariosPost($conexao, $id_post)
+{
+    $stmt = mysqli_prepare(
+        $conexao,
+        "SELECT COUNT(*) FROM comentario WHERE id_post = ?"
+    );
+    mysqli_stmt_bind_param($stmt, 'i', $id_post);
+    mysqli_stmt_execute($stmt);
+    $resBuscarQtdeFavoritosPost = mysqli_stmt_get_result($stmt);
+    $qtde = mysqli_fetch_row($resBuscarQtdeFavoritosPost);
+    mysqli_stmt_close($stmt);
+    return $qtde[0] ?? 0;
+}
