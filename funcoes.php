@@ -180,3 +180,15 @@ function buscarQtdeComentariosPost($conexao, $id_post)
     mysqli_stmt_close($stmt);
     return $qtde[0] ?? 0;
 }
+function buscarQtdeComentariosResposta ($conexao, $id_comentario_pai)
+{
+    $stmt = mysqli_prepare($conexao, "SELECT COUNT(*) AS respostas_comentario
+    FROM comentario
+    WHERE id_comentario_pai = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $id_comentario_pai);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $qtde = mysqli_fetch_row($res);
+    mysqli_stmt_close($stmt);
+    return $qtde[0] ?? 0;
+}

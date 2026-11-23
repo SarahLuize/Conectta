@@ -13,6 +13,7 @@
                     <input type="hidden" name="id" value="<?php echo $_SESSION['usuario_id']; ?>">
                     <input type="hidden" name="idPost" id="idPost" value="">
                     <input type="hidden" name="idComentario" id="idComentario" value="">
+                    <input type="hidden" name="idComentarioResposta" id="idComentarioResposta" value="">
                     <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
                     <input type="hidden" name="tipo" id="tipo" value="">
 

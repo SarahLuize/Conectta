@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $tipo = $_POST['tipo']; // postagem ou comentario
     $idPost = $_POST['idPost']; //numero do id do post
+    $idComentario = !empty($_POST['idComentarioResposta']) ? (int) $_POST['idComentarioResposta'] : null;
     $paginaRedirecionada = $_POST['paginaRedirecionar'] ?? 'feed.php';
     $postagemTexto = $_POST['PostarTextoFeed'] ?? $_POST['PostarTexto'] ?? '';
     $caminhosAnexos = [];
@@ -109,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "Erro ao salvar post: " . ($erroStmt ?? 'Condição não atendida ou erro desconhecido.');
         }
     } else if ($tipo === 'comentario') {
-
         $postagemTexto = trim($postagemTexto);
 
         if ($postagemTexto === '' && !$temAnexo) {
@@ -126,6 +126,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mysqli_stmt_bind_param($sqlPostarComentario, "iisss", $idPost, $id_usuario, $postagemTexto, $anexo1, $anexo2);
             $sucesso = mysqli_stmt_execute($sqlPostarComentario);
             mysqli_stmt_close($sqlPostarComentario);
+        } else {
+            echo "Comentário inválido. Tente novamente!";
+        }
+
+        if ($sucesso) {
+            header("Location: " . $paginaRedirecionada);
+            exit;
+        } else {
+            echo "Erro ao salvar comentário: " . ($erroStmt ?? 'Condição não atendida ou erro desconhecido.');
+        }
+    } else if ($tipo === 'comentarioResposta') {
+
+        $postagemTexto = trim($postagemTexto);
+
+        if ($postagemTexto === '' && !$temAnexo) {
+            $_SESSION['erro_post_null'] = "Erro ao publicar comentário! Comentários sem anexos não podem ser nulos!";
+            header("Location: " . $paginaRedirecionada);
+            exit;
+        }
+
+        $sqlPostarComentarioResposta = mysqli_prepare($conexao, "INSERT INTO comentario
+        (id_post, id_usuario, texto, anexo, anexo2, id_comentario_pai)
+        VALUES(?, ?, ?, ?, ?, ?)");
+
+        if ($sqlPostarComentarioResposta) {
+            mysqli_stmt_bind_param($sqlPostarComentarioResposta, "iisssi", $idPost, $id_usuario, $postagemTexto, $anexo1, $anexo2, $idComentario);
+            $sucesso = mysqli_stmt_execute($sqlPostarComentarioResposta);
+            mysqli_stmt_close($sqlPostarComentarioResposta);
         } else {
             echo "Comentário inválido. Tente novamente!";
         }

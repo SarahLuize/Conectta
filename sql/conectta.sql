@@ -60,6 +60,7 @@ CREATE TABLE `comentario` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_post` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
+  `id_comentario_pai` int(11) DEFAULT NULL,
   `texto` text NOT NULL,
   `anexo` varchar(255) DEFAULT NULL,
   `anexo2` varchar(255) DEFAULT NULL,

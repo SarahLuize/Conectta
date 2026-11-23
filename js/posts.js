@@ -106,8 +106,10 @@ if(modalCaixaPostagem){
         const anexo2 = botao.getAttribute('data-anexo2');
         const idPost = botao.getAttribute('data-id'); //id do post , dado vindo do botão
         const idComentario = botao.getAttribute('data-id-comentario'); //id do comentario , dado vindo do botão
+        const idComentarioResposta = botao.getAttribute('data-id-comentario-resposta'); //id da resposta do comentario , dado vindo do botão
         const inputIdPost = document.getElementById('idPost'); //pega input do post
         const inputIdComentario = document.getElementById('idComentario'); //pega input do comentario
+        const inputIdComentarioResposta = document.getElementById('idComentarioResposta'); //pega input do comentario resposta
         const tipo = document.getElementById('tipo');
 
         if (acao === 'editar-post') {
@@ -136,15 +138,22 @@ if(modalCaixaPostagem){
                 </div>`;
                 console.log("Anexo 2:", anexo2);
             }
-
-            if (idComentario) {
+        } else if (acao === 'postar-comentario') {
+            if (idComentarioResposta) {
+                tipo.value = 'comentarioResposta';
+                document.getElementById('idComentarioResposta').value = idComentarioResposta;
+                document.getElementById('idPost').value = idPost;
+                inputIdComentario.value = idComentario;
+            } else if (idComentario) {
                 tipo.value = 'comentario';
                 document.getElementById('idComentario').value = idComentario;
-                inputIdPost.value = ''; //limpa o id do post
-            } else {
+                document.getElementById('idPost').value = idPost;
+                document.getElementById('idComentarioResposta').value = ''; //limpa o id do comentario resposta
+            } else if (idPost){
                 tipo.value = 'postagem';
                 document.getElementById('idPost').value = idPost;
                 inputIdComentario.value = ''; //limpa o id do comenarios
+                document.getElementById('idComentarioResposta').value = ''; //limpa o id do comentario resposta
             }
         } else {
             previaDiv.classList.remove("anexo-arquivos");
