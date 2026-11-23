@@ -14,7 +14,11 @@ Projeto desenvolvido para praticar PHP, MySQL, CSS e JavaScript, criando uma apl
 - Seguir e deixar de seguir outros usuários  
 - Publicar, editar e excluir as próprias postagens  
 - Favoritar e desfavoritar postagens de outros usuários
-- Comentar nas postagens
+- Comentar nas postagens e responder comentários (incluindo contagem de respostas)
+
+## Em desenvolvimento
+- Ajustar o CSS da listagem de respostas nos comentários
+  
 ## Tecnologias utilizadas
 
 - HTML
