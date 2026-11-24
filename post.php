@@ -291,8 +291,8 @@ $resProcurarUsuarios = mysqli_stmt_get_result($stmt);
                                                             <li>
                                                                 <form action="recebe-excluir-post.php" method="POST" class="m-0">
                                                                     <input type="hidden" name="paginaRedirecionar" value="<?php echo $_SERVER['REQUEST_URI']; ?>">
-                                                                    <input type="hidden" name="idPost" value="<?php echo $comentario['id']; ?>">
-                                                                    <input type="hidden" name="tipo" value="comentario">
+                                                                    <input type="hidden" name="idComentarioResposta" value="<?php echo $comentario['id']; ?>">
+                                                                    <input type="hidden" name="tipo" value="comentarioResposta">
 
                                                                     <button type="submit" class="dropdown-item">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">

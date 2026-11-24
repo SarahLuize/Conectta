@@ -138,6 +138,22 @@ if(modalCaixaPostagem){
                 </div>`;
                 console.log("Anexo 2:", anexo2);
             }
+            if (idComentarioResposta) {
+                tipo.value = 'comentarioResposta';
+                document.getElementById('idComentarioResposta').value = idComentarioResposta;
+                document.getElementById('idPost').value = idPost;
+                inputIdComentario.value = idComentario;
+            } else if (idComentario) {
+                tipo.value = 'comentario';
+                document.getElementById('idComentario').value = idComentario;
+                document.getElementById('idPost').value = idPost;
+                document.getElementById('idComentarioResposta').value = ''; //limpa o id do comentario resposta
+            } else if (idPost){
+                tipo.value = 'postagem';
+                document.getElementById('idPost').value = idPost;
+                inputIdComentario.value = ''; //limpa o id do comenarios
+                document.getElementById('idComentarioResposta').value = ''; //limpa o id do comentario resposta
+            }
         } else if (acao === 'postar-comentario') {
             if (idComentarioResposta) {
                 tipo.value = 'comentarioResposta';
