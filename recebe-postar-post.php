@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "Erro ao salvar comentário: " . ($erroStmt ?? 'Condição não atendida ou erro desconhecido.');
         }
     } else if ($tipo === 'comentarioResposta') {
-
+        $idComentario = !empty($_POST['idComentarioResposta']) ? (int) $_POST['idComentarioResposta'] : null;
         $postagemTexto = trim($postagemTexto);
 
         if ($postagemTexto === '' && !$temAnexo) {
